@@ -1,13 +1,18 @@
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { Button, Checkbox, PasswordInput, TextInput } from '@mantine/core';
+import {
+    Button,
+    Checkbox,
+    Divider,
+    PasswordInput,
+    TextInput,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { FormEventHandler } from 'react';
+import { FcGoogle } from 'react-icons/fc';
 
 interface SocialAuthProps {
     google: boolean;
-    github: boolean;
-    facebook: boolean;
 }
 
 export default function Login({
@@ -134,6 +139,8 @@ export default function Login({
                 <div className="mt-4 flex flex-col items-center justify-end">
                     <Button
                         type="submit"
+                        variant="filled"
+                        color="black"
                         fullWidth
                         loading={loading}
                         loaderProps={{ type: 'dots' }}
@@ -141,35 +148,21 @@ export default function Login({
                         Log in
                     </Button>
                 </div>
-                <div className="mt-3 flex items-center justify-between gap-1">
-                    {socialAuth.google && (
-                        <Button
-                            fullWidth
-                            onClick={() => console.log('Login with Google')}
-                        >
-                            Google
-                        </Button>
-                    )}
-
-                    {socialAuth.github && (
-                        <Button
-                            fullWidth
-                            onClick={() => console.log('Login with Google')}
-                        >
-                            GitHub
-                        </Button>
-                    )}
-
-                    {socialAuth.facebook && (
-                        <Button
-                            fullWidth
-                            onClick={() => console.log('Login with Google')}
-                        >
-                            Facebook
-                        </Button>
-                    )}
-                </div>
             </form>
+
+            <Divider my="xs" label="Or Login With" labelPosition="center" />
+
+            <div className="mt-3 flex flex-col items-center justify-between gap-1">
+                {socialAuth.google && (
+                    <Link
+                        href="#"
+                        className="flex w-full items-center justify-center gap-2 rounded-md bg-white p-2 shadow-lg hover:bg-gray-50"
+                    >
+                        <FcGoogle size={25} />
+                        Continue with Google
+                    </Link>
+                )}
+            </div>
         </GuestLayout>
     );
 }
