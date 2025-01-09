@@ -1,6 +1,7 @@
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import {
+    Alert,
     Button,
     Checkbox,
     Divider,
@@ -25,17 +26,15 @@ export default function Login({
     const socialAuth = usePage().props.socialAuth as SocialAuthProps;
     const [loading, { open, close }] = useDisclosure();
     const { data, setData, post, errors, reset } = useForm({
-        email: 'isaachatilima@gmail.com',
-        name: 'asd',
-        password: 'Password1#',
-        password_confirmation: 'Password1#',
+        email: '',
+        password: '',
         remember: false,
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         open();
-        post('/register', {
+        post('/login', {
             onFinish: () => {
                 reset('password');
             },
@@ -50,31 +49,12 @@ export default function Login({
             <Head title="Log in" />
 
             {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
+                <Alert variant="light" color="green" title="Success">
                     {status}
-                </div>
+                </Alert>
             )}
 
             <form onSubmit={submit}>
-                <TextInput
-                    id="name"
-                    type="text"
-                    name="name"
-                    value={data.name}
-                    error={errors.name}
-                    withAsterisk
-                    autoComplete="username"
-                    mt="md"
-                    label="name"
-                    placeholder="name"
-                    onChange={(e) => setData('name', e.target.value)}
-                    inputWrapperOrder={[
-                        'label',
-                        'input',
-                        'description',
-                        'error',
-                    ]}
-                />
                 <TextInput
                     id="email"
                     type="email"
@@ -150,7 +130,7 @@ export default function Login({
                 </div>
             </form>
 
-            <Divider my="xs" label="Or Login With" labelPosition="center" />
+            <Divider my="xs" label="Or" labelPosition="center" />
 
             <div className="mt-3 flex flex-col items-center justify-between gap-1">
                 {socialAuth.google && (
@@ -162,6 +142,14 @@ export default function Login({
                         Continue with Google
                     </Link>
                 )}
+            </div>
+            <div className="mt-2 flex items-center justify-end">
+                <Link
+                    href={route('register')}
+                    className="mt-3 rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                    Don't have an account? Register here
+                </Link>
             </div>
         </GuestLayout>
     );

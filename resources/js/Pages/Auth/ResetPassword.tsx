@@ -1,9 +1,7 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
+import { Button, PasswordInput } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { FormEventHandler } from 'react';
 
 export default function ResetPassword({
@@ -13,19 +11,24 @@ export default function ResetPassword({
     token: string;
     email: string;
 }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, errors, reset } = useForm({
         token: token,
         email: email,
         password: '',
         password_confirmation: '',
     });
+    const [loading, { open, close }] = useDisclosure();
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
+        open();
         post(route('password.store'), {
-            onFinish: () => reset('password', 'password_confirmation'),
+            onFinish: () => {
+                reset('password', 'password_confirmation');
+            },
+            onError: () => {},
         });
+        close();
     };
 
     return (
@@ -33,66 +36,59 @@ export default function ResetPassword({
             <Head title="Reset Password" />
 
             <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                <PasswordInput
+                    id="password"
+                    type="password"
+                    name="password"
+                    value={data.password}
+                    error={errors.password}
+                    autoComplete="password"
+                    withAsterisk
+                    mt="md"
+                    label="Password"
+                    placeholder="Password"
+                    onChange={(e) => setData('password', e.target.value)}
+                    inputWrapperOrder={[
+                        'label',
+                        'input',
+                        'description',
+                        'error',
+                    ]}
+                />
 
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
-                    />
-
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        isFocused={true}
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel
-                        htmlFor="password_confirmation"
-                        value="Confirm Password"
-                    />
-
-                    <TextInput
-                        type="password"
-                        name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) =>
-                            setData('password_confirmation', e.target.value)
-                        }
-                    />
-
-                    <InputError
-                        message={errors.password_confirmation}
-                        className="mt-2"
-                    />
-                </div>
+                <PasswordInput
+                    id="password_confirmation"
+                    type="password"
+                    name="password_confirmation"
+                    value={data.password_confirmation}
+                    error={errors.password_confirmation}
+                    autoComplete="password_confirmation"
+                    withAsterisk
+                    mt="md"
+                    label="Password Confirmation"
+                    placeholder="Password Confirmation"
+                    onChange={(e) =>
+                        setData('password_confirmation', e.target.value)
+                    }
+                    inputWrapperOrder={[
+                        'label',
+                        'input',
+                        'description',
+                        'error',
+                    ]}
+                />
 
                 <div className="mt-4 flex items-center justify-end">
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                    <Button
+                        type="submit"
+                        variant="filled"
+                        color="black"
+                        fullWidth
+                        loading={loading}
+                        loaderProps={{ type: 'dots' }}
+                    >
                         Reset Password
-                    </PrimaryButton>
+                    </Button>
                 </div>
             </form>
         </GuestLayout>

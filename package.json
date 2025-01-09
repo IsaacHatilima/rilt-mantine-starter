@@ -39,7 +39,10 @@
     },
     "dependencies": {
         "@mantine/core": "^7.15.2",
+        "@mantine/dates": "^7.15.2",
         "@mantine/hooks": "^7.15.2",
+        "dayjs": "^1.11.13",
+        "dayjs-plugin-utc": "^0.1.2",
         "react-icons": "^5.4.0"
     }
 }
