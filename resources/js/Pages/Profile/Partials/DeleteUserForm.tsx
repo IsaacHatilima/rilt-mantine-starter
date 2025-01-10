@@ -22,7 +22,7 @@ export default function DeleteUserForm({
         reset,
         errors,
     } = useForm({
-        password: '',
+        current_password: '',
     });
 
     const deleteUser: FormEventHandler = (e: FormEvent<Element>): void => {
@@ -98,18 +98,18 @@ export default function DeleteUserForm({
 
                     <div className="mt-6">
                         <PasswordInput
-                            id="password"
+                            id="current_password"
                             type="password"
-                            name="password"
-                            value={data.password}
-                            error={errors.password}
+                            name="current_password"
+                            value={data.current_password}
+                            error={errors.current_password}
                             autoComplete="password"
                             data-autofocus
                             mt="md"
                             label="Password"
                             placeholder="Password"
                             onChange={(e) =>
-                                setData('password', e.target.value)
+                                setData('current_password', e.target.value)
                             }
                             inputWrapperOrder={[
                                 'label',

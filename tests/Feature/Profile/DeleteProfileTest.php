@@ -10,7 +10,7 @@ test('user can delete their account', function () {
     $response = $this
         ->actingAs($user)
         ->delete(route('profile.destroy'), [
-            'password' => 'Password1#',
+            'current_password' => 'Password1#',
         ]);
 
     $response
@@ -29,11 +29,11 @@ test('correct password must be provided to delete account', function () {
         ->actingAs($user)
         ->from('/profile')
         ->delete('/profile', [
-            'password' => 'wrong-password',
+            'current_password' => 'wrong-password',
         ]);
 
     $response
-        ->assertSessionHasErrors('password')
+        ->assertSessionHasErrors('current_password')
         ->assertRedirect('/profile');
 
     $this->assertNotNull($user->fresh());

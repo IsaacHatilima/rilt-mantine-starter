@@ -1,4 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import TwoFactorConfig from '@/Pages/Profile/Partials/TwoFactorConfig';
 import { Head } from '@inertiajs/react';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 
@@ -17,6 +18,10 @@ function Security() {
                 <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
                     <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
                         <UpdatePasswordForm />
+                    </div>
+
+                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                        <TwoFactorConfig />
                     </div>
                 </div>
             </div>
