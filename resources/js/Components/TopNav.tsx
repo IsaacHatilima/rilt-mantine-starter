@@ -30,13 +30,8 @@ export default function TopNav({ user }: { user: User }) {
                                 href={route('profile.edit')}
                                 className="block h-full w-full"
                             >
-                                Password
+                                Security
                             </Link>
-                        </Menu.Item>
-                        <Menu.Item
-                            onClick={() => router.get(route('profile.edit'))}
-                        >
-                            2FA
                         </Menu.Item>
                         <Menu.Divider />
                         <Menu.Item

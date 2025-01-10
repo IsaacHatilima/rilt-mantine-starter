@@ -6,7 +6,7 @@ import { DateInput } from '@mantine/dates';
 import { useDisclosure } from '@mantine/hooks';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import React from 'react';
+import { FormEvent, FormEventHandler } from 'react';
 
 dayjs.extend(utc);
 
@@ -32,7 +32,7 @@ export default function UpdateProfileInformation({
             : null,
     });
 
-    const submit = (e: React.FormEvent) => {
+    const submit: FormEventHandler = (e: FormEvent<Element>): void => {
         e.preventDefault();
         open();
         patch(route('profile.update'), {
@@ -43,7 +43,6 @@ export default function UpdateProfileInformation({
                     'green',
                 );
             },
-            onError: () => {},
             onFinish: () => {
                 close();
             },

@@ -2,19 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Auth\DeleteAccountAction;
 use App\Actions\Profile\ProfileManagerAction;
+use App\Http\Requests\Auth\CurrentPasswordRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ProfileController extends Controller
 {
-    public function __construct(private readonly ProfileManagerAction $profileManagerAction) {}
+    public function __construct(
+        private readonly ProfileManagerAction $profileManagerAction,
+        private readonly DeleteAccountAction $deleteAccountAction
+    ) {}
 
     /**
      * Display the user's profile form.
@@ -40,20 +44,9 @@ class ProfileController extends Controller
     /**
      * Delete the user's account.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(CurrentPasswordRequest $request): RedirectResponse
     {
-        $request->validate([
-            'password' => ['required', 'current_password'],
-        ]);
-
-        $user = $request->user();
-
-        Auth::logout();
-
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $this->deleteAccountAction->delete_account($request);
 
         return Redirect::to('/');
     }
