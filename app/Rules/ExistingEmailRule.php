@@ -20,4 +20,16 @@ class ExistingEmailRule
             ],
         ];
     }
+
+    public static function messages(): array
+    {
+        return [
+            'email.required' => 'E-Mail is required.',
+            'email.string' => 'E-Mail must be a string.',
+            'email.lowercase' => 'E-Mail address must be lowercase.',
+            'email.email' => 'Invalid E-Mail address.',
+            'email.max' => 'Maximum 255 characters allowed.',
+            'email.unique' => 'This E-Mail address is already in use.',
+        ];
+    }
 }

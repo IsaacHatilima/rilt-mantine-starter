@@ -39,4 +39,11 @@ class SetPasswordAction
             }
         );
     }
+
+    public function change_password($request): void
+    {
+        $request->user()->update([
+            'password' => Hash::make($request->password),
+        ]);
+    }
 }

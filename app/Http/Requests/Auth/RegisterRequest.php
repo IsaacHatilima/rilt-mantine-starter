@@ -35,30 +35,11 @@ class RegisterRequest extends FormRequest
 
     public function messages(): array
     {
-        return [
-            'first_name.required' => 'First name is required.',
-            'first_name.max' => 'First name is too long.',
-            'first_name.string' => 'First name must be a string.',
-
-            'last_name.required' => 'Last name is required.',
-            'last_name.max' => 'First name is too long.',
-            'last_name.string' => 'Last name must be a string.',
-
-            'email.required' => 'Email is required.',
-            'email.email' => 'Invalid email.',
-            'email.max' => 'Email is too long.',
-            'email.string' => 'Email must be a string.',
-            'email.unique' => 'Email already exists.',
-            'email.lowercase' => 'Invalid email.',
-
-            'password.required' => 'Password is required.',
-            'password.min' => 'Password is too short.',
-            'password.regex' => 'Password must contain at least one number and one uppercase and lowercase letter and a special character.',
-            'password.required_with' => 'Password Confirm is required.',
-            'password.same' => 'Password does not match.',
-
-            'password_confirmation.required' => 'Confirm Password is required.',
-            'password_confirmation.same' => 'Confirm Password does not match.',
-        ];
+        return array_merge(
+            StringRule::messages('first_name', true),
+            StringRule::messages('last_name', true),
+            NewEmailRule::messages(),
+            NewPasswordRule::messages(),
+        );
     }
 }

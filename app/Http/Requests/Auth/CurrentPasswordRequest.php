@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Rules\CurrentPasswordRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -22,16 +23,15 @@ class CurrentPasswordRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'password' => ['required', 'current_password'],
-        ];
+        return array_merge(
+            CurrentPasswordRule::rules(),
+        );
     }
 
     public function messages(): array
     {
-        return [
-            'password.required' => 'Password is required.',
-            'password.current_password' => 'Password is incorrect.',
-        ];
+        return array_merge(
+            CurrentPasswordRule::messages(),
+        );
     }
 }

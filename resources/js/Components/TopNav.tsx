@@ -27,7 +27,7 @@ export default function TopNav({ user }: { user: User }) {
                         </Menu.Item>
                         <Menu.Item>
                             <Link
-                                href={route('profile.edit')}
+                                href={route('security.edit')}
                                 className="block h-full w-full"
                             >
                                 Security

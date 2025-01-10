@@ -2,11 +2,12 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Rules\CurrentPasswordRule;
 use App\Rules\NewPasswordRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class SetPasswordRequest extends FormRequest
+class ChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +25,7 @@ class SetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return array_merge(
-            [
-                'email' => 'required|email',
-                'token' => 'required',
-            ],
+            CurrentPasswordRule::rules(),
             NewPasswordRule::rules(),
         );
     }
@@ -35,11 +33,8 @@ class SetPasswordRequest extends FormRequest
     public function messages(): array
     {
         return array_merge(
-            [
-                'email.required' => 'Email is required.',
-                'token.required' => 'Token is required.',
-            ],
-            NewPasswordRule::messages()
+            CurrentPasswordRule::messages(),
+            NewPasswordRule::messages(),
         );
     }
 }

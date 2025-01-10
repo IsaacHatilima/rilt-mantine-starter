@@ -17,4 +17,16 @@ class NewEmailRule
             ],
         ];
     }
+
+    public static function messages(): array
+    {
+        return [
+            'email.required' => 'Email is required.',
+            'email.email' => 'Invalid email.',
+            'email.max' => 'Email is too long.',
+            'email.string' => 'Email must be a string.',
+            'email.unique' => 'Email already exists.',
+            'email.lowercase' => 'Invalid email.',
+        ];
+    }
 }

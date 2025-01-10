@@ -23,7 +23,20 @@ class ProfileUpdateRequest extends FormRequest
             ExistingEmailRule::rules($this->user()->id),
             [
                 'date_of_birth' => ['nullable', 'date'],
-                'gender' => ['nullable', Rule::in(['male', 'female', 'other'])],
+                'gender' => ['nullable', Rule::in(['male', 'female', 'other']), 'string'],
+            ]
+        );
+    }
+
+    public function messages(): array
+    {
+        return array_merge(
+            StringRule::messages('first_name', true),
+            StringRule::messages('last_name', true),
+            ExistingEmailRule::messages(),
+            [
+                'date_of_birth.date' => 'Date of birth must be a valid date.',
+                'gender.string' => 'Gender must be a string.',
             ]
         );
     }

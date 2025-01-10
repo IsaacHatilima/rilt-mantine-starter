@@ -21,4 +21,18 @@ class NewPasswordRule
             ],
         ];
     }
+
+    public static function messages(): array
+    {
+        return [
+            'password.required' => 'Password is required.',
+            'password.min' => 'Password must be at least 8 characters.',
+            'password.same' => 'Password does not match.',
+            'password.regex' => 'Password must contain at least one number and one uppercase and lowercase letter.',
+            'password.required_with' => 'Both Password and Password Confirm are required.',
+
+            'password_confirmation.required' => 'Confirm Password is required.',
+            'password_confirmation.same' => 'Confirm Password does not match.',
+        ];
+    }
 }
