@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/security', [SecurityController::class, 'edit'])->name('security.edit');
+    Route::put('/security', [SecurityController::class, 'copy_recovery_codes'])->name('security.put');
 });
 
 require __DIR__.'/auth.php';

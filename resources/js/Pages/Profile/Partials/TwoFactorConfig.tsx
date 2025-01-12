@@ -1,24 +1,35 @@
 import { useNotification } from '@/Context/NotificationContext';
+import ConfirmTwoFactor from '@/Pages/Profile/Partials/ConfirmTwoFactor';
+import DeactivateTwoFactor from '@/Pages/Profile/Partials/DeactivateTwoFactor';
+import EnableTowFactor from '@/Pages/Profile/Partials/EnableTowFactor';
 import { User } from '@/types';
-import { router, useForm, usePage } from '@inertiajs/react';
-import { Button, Modal, PasswordInput } from '@mantine/core';
+import { router, usePage } from '@inertiajs/react';
+import { Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
-import React, { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 function TwoFactorConfig() {
-    const [loading, { open: openLoading, close: closeLoading }] =
-        useDisclosure();
-    const [opened, { open: openModal, close: closeModal }] =
-        useDisclosure(false);
     const user: User = usePage().props.auth.user;
-    const { triggerNotification } = useNotification();
-    const [errors, setErrors] = useState<{ password?: string }>({});
 
-    const { data, setData } = useForm({
-        code: '',
-        password: '',
-    });
+    const [qrCodeSvg, setQrCodeSvg] = useState<string | null>(null);
+    const [recoveryCodes, setRecoveryCodes] = useState<string[] | null>(null);
+    const [loading, { open, close }] = useDisclosure();
+    const { triggerNotification } = useNotification();
+    const copiedTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // Get 2FA QR Code
+    const handleGetTwoFactorQRCode = () => {
+        axios.get('/user/two-factor-qr-code').then((response) => {
+            setQrCodeSvg(response.data.svg);
+        });
+    };
+
+    const handleGetTwoFactorRecoveryCodes = () => {
+        axios.get('/user/two-factor-recovery-codes').then((response) => {
+            setRecoveryCodes(response.data); // Update the ref's value
+        });
+    };
 
     function refreshUser() {
         router.get(
@@ -30,47 +41,50 @@ function TwoFactorConfig() {
         );
     }
 
-    const handleActivateTwoFactor = () => {
-        openLoading();
+    useEffect(() => {
+        if (user.two_factor_secret && !user.copied_codes) {
+            handleGetTwoFactorQRCode();
+            handleGetTwoFactorRecoveryCodes();
+        }
+    });
+
+    const handleCopiedCodes = () => {
         axios
-            .post('/user/two-factor-authentication')
+            .put(route('security.put'))
             .then(() => {
                 refreshUser();
                 triggerNotification(
                     'Success',
-                    '2FA has been enabled.',
+                    '2FA recovery codes copied.',
                     'green',
                 );
-                closeModal();
-                closeLoading();
             })
             .catch(() => {
                 triggerNotification(
                     'Warning',
-                    'Unable to enable 2FA.',
+                    'Unable to copy 2FA recovery codes.',
                     'yellow',
                 );
-                closeLoading();
             });
     };
 
-    const handleTwoFAPasswordConfirm = (e: React.FormEvent) => {
-        e.preventDefault();
-        openLoading();
+    const handleDownloadCodes = () => {
+        open();
 
-        if (data.password !== '') {
-            axios
-                .post('/user/confirm-password', { password: data.password })
-                .then(() => {
-                    handleActivateTwoFactor();
-                })
-                .catch(() => {
-                    setErrors({ password: 'Invalid Password.' });
-                });
-        } else {
-            setErrors({ password: 'Password is required.' });
-            closeLoading();
-        }
+        const blob = new Blob([recoveryCodes!.join('\n')], {
+            type: 'text/plain',
+        });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'recoveryCodes.txt';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+
+        handleCopiedCodes();
+
+        close();
     };
 
     return (
@@ -79,66 +93,65 @@ function TwoFactorConfig() {
                 <h2 className="text-lg font-medium text-gray-900">
                     Two-Factor Authentication Settings
                 </h2>
+                <p className="mt-1 text-sm text-gray-600">
+                    If you logout before completing the process, deactivate and
+                    restart.
+                </p>
             </header>
+            <div className="mt-4">
+                {qrCodeSvg && !user.two_factor_confirmed_at && (
+                    <div
+                        dangerouslySetInnerHTML={{ __html: qrCodeSvg }}
+                        className="qr-code my-10 flex items-center justify-center"
+                    />
+                )}
+
+                {recoveryCodes &&
+                    user.two_factor_confirmed_at &&
+                    !user.copied_codes && (
+                        <div className="my-10 flex items-center justify-center">
+                            <ul>
+                                {recoveryCodes.map(
+                                    (code: string, index: number) => (
+                                        <li
+                                            key={index}
+                                            className="mb-2 font-bold text-gray-900"
+                                        >
+                                            {code}
+                                        </li>
+                                    ),
+                                )}
+                            </ul>
+                        </div>
+                    )}
+            </div>
 
             {user.two_factor_secret &&
             user.two_factor_recovery_codes &&
             user.two_factor_confirmed_at ? (
-                <h1>Deactivate</h1>
-            ) : user.two_factor_secret && user.two_factor_recovery_codes ? (
-                <h1>Confirm</h1>
-            ) : (
-                <div className="mt-2 flex items-center justify-center gap-4">
-                    <Button
-                        onClick={openModal}
-                        type="button"
-                        variant="filled"
-                        color="rgba(0, 0, 0, 1)"
-                    >
-                        Active 2FA
-                    </Button>
-                    <Modal
-                        opened={opened}
-                        onClose={closeModal}
-                        title="Authentication"
-                    >
-                        <div className="px-4">
-                            <form onSubmit={handleTwoFAPasswordConfirm}>
-                                <PasswordInput
-                                    mt="xl"
-                                    label="Password"
-                                    placeholder="Password"
-                                    error={errors.password}
-                                    withAsterisk
-                                    inputWrapperOrder={[
-                                        'label',
-                                        'input',
-                                        'error',
-                                    ]}
-                                    name="password"
-                                    value={data.password}
-                                    onChange={(e) =>
-                                        setData('password', e.target.value)
-                                    }
-                                    autoFocus={true}
-                                />
-
-                                <div className="my-4 flex items-center gap-4">
-                                    <Button
-                                        type="submit"
-                                        fullWidth
-                                        variant="filled"
-                                        color="rgba(0, 0, 0, 1)"
-                                        loading={loading}
-                                        loaderProps={{ type: 'dots' }}
-                                    >
-                                        Active 2FA
-                                    </Button>
-                                </div>
-                            </form>
+                <div className="flex flex-col items-center justify-center gap-2 md:flex-row">
+                    <DeactivateTwoFactor refreshUser={refreshUser} />
+                    {!user.copied_codes && (
+                        <div className="mt-2">
+                            <Button
+                                type="button"
+                                variant="filled"
+                                loading={loading}
+                                loaderProps={{ type: 'dots' }}
+                                onClick={handleDownloadCodes}
+                            >
+                                Copy Codes
+                            </Button>
                         </div>
-                    </Modal>
+                    )}
                 </div>
+            ) : user.two_factor_secret && user.two_factor_recovery_codes ? (
+                <div className="flex flex-col items-center justify-center gap-2 md:flex-row">
+                    <DeactivateTwoFactor refreshUser={refreshUser} />
+                    <ConfirmTwoFactor refreshUser={refreshUser} />
+                </div>
+            ) : (
+                <EnableTowFactor refreshUser={refreshUser} />
             )}
         </section>
     );

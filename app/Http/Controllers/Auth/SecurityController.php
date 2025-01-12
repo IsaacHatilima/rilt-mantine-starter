@@ -19,6 +19,13 @@ class SecurityController extends Controller
         return Inertia::render('Profile/Security', []);
     }
 
+    public function copy_recovery_codes()
+    {
+        auth()->user()->update(['copied_codes' => true]);
+
+        return response(null, 200);
+    }
+
     public function update(ChangePasswordRequest $request): RedirectResponse
     {
         $this->setPasswordAction->change_password($request);
