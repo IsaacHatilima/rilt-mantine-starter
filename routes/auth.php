@@ -20,6 +20,10 @@ Route::middleware('guest')->group(function () {
     Route::get('login', [LoginController::class, 'create'])
         ->name('login');
 
+    Route::get('/two-factor-challenge', function () {
+        return 'ok';
+    })->name('two-factor.login');
+
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request'); // Done
 

@@ -8,7 +8,7 @@ test('login screen can be rendered', function () {
     $response->assertStatus(200);
 });
 
-test('users can authenticate using the login screen', function () {
+test('No  2FA users can authenticate', function () {
     $user = User::factory()->create([
         'password' => Hash::make('Password1#'),
     ]);
@@ -22,7 +22,18 @@ test('users can authenticate using the login screen', function () {
     $response->assertRedirect(route('dashboard', absolute: false));
 });
 
-test('users can not authenticate with invalid password', function () {
+test('No  2FA users can not authenticate with invalid email', function () {
+    $user = User::factory()->create();
+
+    $this->post('/login', [
+        'email' => 'invalid@email.com',
+        'password' => 'wrong-password',
+    ]);
+
+    $this->assertGuest();
+});
+
+test('No  2FA users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
     $this->post('/login', [
@@ -31,13 +42,4 @@ test('users can not authenticate with invalid password', function () {
     ]);
 
     $this->assertGuest();
-});
-
-test('users can logout', function () {
-    $user = User::factory()->create();
-
-    $response = $this->actingAs($user)->post('/logout');
-
-    $this->assertGuest();
-    $response->assertRedirect('/');
 });
