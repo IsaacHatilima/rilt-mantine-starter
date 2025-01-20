@@ -1,4 +1,3 @@
-import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import {
     Alert,
@@ -11,21 +10,20 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { FormEventHandler } from 'react';
 import { FcGoogle } from 'react-icons/fc';
+import GuestLayout from '../../Layouts/GuestLayout';
 
 interface SocialAuthProps {
     google: boolean;
 }
 
-export default function Login({
-    status,
-    canResetPassword,
-}: {
-    status?: string;
-    canResetPassword: boolean;
-}) {
+export default function Login({ status }: { status?: string }) {
     const socialAuth = usePage().props.socialAuth as SocialAuthProps;
     const [loading, { open, close }] = useDisclosure();
-    const { data, setData, post, errors, reset } = useForm({
+    const { data, setData, post, errors, reset } = useForm<{
+        email: string;
+        password: string;
+        remember: boolean;
+    }>({
         email: '',
         password: '',
         remember: false,
@@ -106,14 +104,13 @@ export default function Login({
                             Remember me
                         </span>
                     </label>
-                    {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="mt-3 rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
-                            Forgot your password?
-                        </Link>
-                    )}
+
+                    <Link
+                        href={route('password.request')}
+                        className="mt-3 rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        Forgot your password?
+                    </Link>
                 </div>
 
                 <div className="mt-4 flex flex-col items-center justify-end">
@@ -125,7 +122,7 @@ export default function Login({
                         loading={loading}
                         loaderProps={{ type: 'dots' }}
                     >
-                        Log in
+                        Login
                     </Button>
                 </div>
             </form>
