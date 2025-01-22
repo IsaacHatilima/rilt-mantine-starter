@@ -1,36 +1,38 @@
-import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { Button, Checkbox, PasswordInput, TextInput } from '@mantine/core';
+import {
+    Alert,
+    Button,
+    Checkbox,
+    Divider,
+    PasswordInput,
+    TextInput,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { FormEventHandler } from 'react';
+import { FcGoogle } from 'react-icons/fc';
+import GuestLayout from '../../Layouts/GuestLayout';
 
 interface SocialAuthProps {
     google: boolean;
-    github: boolean;
-    facebook: boolean;
 }
 
-export default function Login({
-    status,
-    canResetPassword,
-}: {
-    status?: string;
-    canResetPassword: boolean;
-}) {
+export default function Login({ status }: { status?: string }) {
     const socialAuth = usePage().props.socialAuth as SocialAuthProps;
     const [loading, { open, close }] = useDisclosure();
-    const { data, setData, post, errors, reset } = useForm({
-        email: 'isaachatilima@gmail.com',
-        name: 'asd',
-        password: 'Password1#',
-        password_confirmation: 'Password1#',
+    const { data, setData, post, errors, reset } = useForm<{
+        email: string;
+        password: string;
+        remember: boolean;
+    }>({
+        email: '',
+        password: '',
         remember: false,
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         open();
-        post('/register', {
+        post('/login', {
             onFinish: () => {
                 reset('password');
             },
@@ -45,31 +47,12 @@ export default function Login({
             <Head title="Log in" />
 
             {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
+                <Alert variant="light" color="green" title="Success">
                     {status}
-                </div>
+                </Alert>
             )}
 
             <form onSubmit={submit}>
-                <TextInput
-                    id="name"
-                    type="text"
-                    name="name"
-                    value={data.name}
-                    error={errors.name}
-                    withAsterisk
-                    autoComplete="username"
-                    mt="md"
-                    label="name"
-                    placeholder="name"
-                    onChange={(e) => setData('name', e.target.value)}
-                    inputWrapperOrder={[
-                        'label',
-                        'input',
-                        'description',
-                        'error',
-                    ]}
-                />
                 <TextInput
                     id="email"
                     type="email"
@@ -121,55 +104,50 @@ export default function Login({
                             Remember me
                         </span>
                     </label>
-                    {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="mt-3 rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
-                            Forgot your password?
-                        </Link>
-                    )}
+
+                    <Link
+                        href={route('password.request')}
+                        className="mt-3 rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        Forgot your password?
+                    </Link>
                 </div>
 
                 <div className="mt-4 flex flex-col items-center justify-end">
                     <Button
                         type="submit"
+                        variant="filled"
+                        color="black"
                         fullWidth
                         loading={loading}
                         loaderProps={{ type: 'dots' }}
                     >
-                        Log in
+                        Login
                     </Button>
                 </div>
-                <div className="mt-3 flex items-center justify-between gap-1">
-                    {socialAuth.google && (
-                        <Button
-                            fullWidth
-                            onClick={() => console.log('Login with Google')}
-                        >
-                            Google
-                        </Button>
-                    )}
-
-                    {socialAuth.github && (
-                        <Button
-                            fullWidth
-                            onClick={() => console.log('Login with Google')}
-                        >
-                            GitHub
-                        </Button>
-                    )}
-
-                    {socialAuth.facebook && (
-                        <Button
-                            fullWidth
-                            onClick={() => console.log('Login with Google')}
-                        >
-                            Facebook
-                        </Button>
-                    )}
-                </div>
             </form>
+
+            <Divider my="xs" label="Or" labelPosition="center" />
+
+            <div className="mt-3 flex flex-col items-center justify-between gap-1">
+                {socialAuth.google && (
+                    <Link
+                        href="#"
+                        className="flex w-full items-center justify-center gap-2 rounded-md bg-white p-2 shadow-lg hover:bg-gray-50"
+                    >
+                        <FcGoogle size={25} />
+                        Continue with Google
+                    </Link>
+                )}
+            </div>
+            <div className="mt-2 flex items-center justify-end">
+                <Link
+                    href={route('register')}
+                    className="mt-3 rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                    Don't have an account? Register here
+                </Link>
+            </div>
         </GuestLayout>
     );
 }

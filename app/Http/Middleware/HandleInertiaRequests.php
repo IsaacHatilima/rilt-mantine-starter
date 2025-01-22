@@ -34,11 +34,12 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+                'profile' => $request->user()?->profile,
             ],
             'socialAuth' => [
-                'google' => env('GOOGLE_SOCIAL_AUTH', false),
-                'github' => env('GITHUB_SOCIAL_AUTH', false),
-                'facebook' => env('FACEBOOK_SOCIAL_AUTH', false),
+                'google' => config('auth.socialAuth.google'),
+                'github' => config('auth.socialAuth.github'),
+                'facebook' => config('auth.socialAuth.facebook'),
             ],
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),

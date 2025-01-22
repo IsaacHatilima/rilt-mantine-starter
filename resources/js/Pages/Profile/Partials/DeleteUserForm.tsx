@@ -1,19 +1,18 @@
-import DangerButton from '@/Components/DangerButton';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import Modal from '@/Components/Modal';
-import SecondaryButton from '@/Components/SecondaryButton';
-import TextInput from '@/Components/TextInput';
+import { useNotification } from '@/Context/NotificationContext';
 import { useForm } from '@inertiajs/react';
-import { FormEventHandler, useRef, useState } from 'react';
+import { Button, Modal, PasswordInput } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { FormEvent, FormEventHandler, useRef } from 'react';
 
 export default function DeleteUserForm({
     className = '',
 }: {
     className?: string;
 }) {
-    const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
+    const [loading, { open, close }] = useDisclosure(false);
+    const { triggerNotification } = useNotification();
     const passwordInput = useRef<HTMLInputElement>(null);
+    const [firstOpened, firstHandlers] = useDisclosure(false);
 
     const {
         data,
@@ -22,36 +21,39 @@ export default function DeleteUserForm({
         processing,
         reset,
         errors,
-        clearErrors,
     } = useForm({
-        password: '',
+        current_password: '',
     });
 
-    const confirmUserDeletion = () => {
-        setConfirmingUserDeletion(true);
-    };
-
-    const deleteUser: FormEventHandler = (e) => {
+    const deleteUser: FormEventHandler = (e: FormEvent<Element>): void => {
         e.preventDefault();
-
+        open();
         destroy(route('profile.destroy'), {
             preserveScroll: true,
-            onSuccess: () => closeModal(),
+            onSuccess: () => {
+                triggerNotification(
+                    'Success',
+                    'Your profile has been updated successfully!',
+                    'green',
+                );
+            },
             onError: () => passwordInput.current?.focus(),
-            onFinish: () => reset(),
+            onFinish: () => {
+                reset();
+                close();
+            },
         });
-    };
-
-    const closeModal = () => {
-        setConfirmingUserDeletion(false);
-
-        clearErrors();
-        reset();
     };
 
     return (
         <section className={`space-y-6 ${className}`}>
             <header>
+                <div className="mb-2 w-full rounded-md bg-red-300 p-3">
+                    <h2 className="text-lg font-medium text-white">
+                        Danger Zone
+                    </h2>
+                </div>
+
                 <h2 className="text-lg font-medium text-gray-900">
                     Delete Account
                 </h2>
@@ -64,11 +66,24 @@ export default function DeleteUserForm({
                 </p>
             </header>
 
-            <DangerButton onClick={confirmUserDeletion}>
+            <Button
+                onClick={() => {
+                    firstHandlers.open();
+                }}
+                variant="filled"
+                color="red"
+            >
                 Delete Account
-            </DangerButton>
+            </Button>
 
-            <Modal show={confirmingUserDeletion} onClose={closeModal}>
+            <Modal
+                opened={firstOpened}
+                title="Account Deletion"
+                onClose={() => {
+                    firstHandlers.close();
+                    reset();
+                }}
+            >
                 <form onSubmit={deleteUser} className="p-6">
                     <h2 className="text-lg font-medium text-gray-900">
                         Are you sure you want to delete your account?
@@ -82,40 +97,50 @@ export default function DeleteUserForm({
                     </p>
 
                     <div className="mt-6">
-                        <InputLabel
-                            htmlFor="password"
-                            value="Password"
-                            className="sr-only"
-                        />
-
-                        <TextInput
-                            id="password"
+                        <PasswordInput
+                            id="current_password"
                             type="password"
-                            name="password"
-                            ref={passwordInput}
-                            value={data.password}
-                            onChange={(e) =>
-                                setData('password', e.target.value)
-                            }
-                            className="mt-1 block w-3/4"
-                            isFocused
+                            name="current_password"
+                            value={data.current_password}
+                            error={errors.current_password}
+                            autoComplete="password"
+                            data-autofocus
+                            mt="md"
+                            label="Password"
                             placeholder="Password"
-                        />
-
-                        <InputError
-                            message={errors.password}
-                            className="mt-2"
+                            onChange={(e) =>
+                                setData('current_password', e.target.value)
+                            }
+                            inputWrapperOrder={[
+                                'label',
+                                'input',
+                                'description',
+                                'error',
+                            ]}
                         />
                     </div>
 
                     <div className="mt-6 flex justify-end">
-                        <SecondaryButton onClick={closeModal}>
+                        <Button
+                            onClick={() => {
+                                reset();
+                                firstHandlers.close();
+                            }}
+                        >
                             Cancel
-                        </SecondaryButton>
+                        </Button>
 
-                        <DangerButton className="ms-3" disabled={processing}>
+                        <Button
+                            type="submit"
+                            className="ms-3"
+                            disabled={processing}
+                            loading={loading}
+                            loaderProps={{ type: 'dots' }}
+                            variant="filled"
+                            color="red"
+                        >
                             Delete Account
-                        </DangerButton>
+                        </Button>
                     </div>
                 </form>
             </Modal>

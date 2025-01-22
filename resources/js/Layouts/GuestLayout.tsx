@@ -1,7 +1,7 @@
-import Logo from '@/Components/Logo';
 import { Link } from '@inertiajs/react';
 import { Card } from '@mantine/core';
 import { PropsWithChildren } from 'react';
+import Logo from '../Components/Logo';
 
 export default function Guest({ children }: PropsWithChildren) {
     return (
