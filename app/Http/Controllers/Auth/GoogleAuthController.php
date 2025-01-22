@@ -43,6 +43,10 @@ class GoogleAuthController extends Controller
 
         Auth::login($user);
 
+        $user->update([
+            'last_login_at' => now(),
+        ]);
+
         return redirect(route('dashboard', absolute: false));
     }
 }
