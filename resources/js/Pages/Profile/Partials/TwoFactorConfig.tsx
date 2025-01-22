@@ -16,8 +16,7 @@ function TwoFactorConfig() {
     const [recoveryCodes, setRecoveryCodes] = useState<string[] | null>(null);
     const [loading, { open, close }] = useDisclosure();
     const { triggerNotification } = useNotification();
-    const copiedTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-
+    useRef<ReturnType<typeof setTimeout> | null>(null);
     // Get 2FA QR Code
     const handleGetTwoFactorQRCode = () => {
         axios.get('/user/two-factor-qr-code').then((response) => {

@@ -5,7 +5,6 @@ namespace App\Actions\Auth;
 use App\Actions\Profile\ProfileManagerAction;
 use App\Models\User;
 use App\Notifications\VerifyEmailNotification;
-use Illuminate\Support\Str;
 
 readonly class RegisterAction
 {
@@ -35,7 +34,6 @@ readonly class RegisterAction
     {
         $user = User::create([
             'email' => $request->email,
-            'password' => Str::random(),
             'email_verified_at' => now(),
         ]);
 

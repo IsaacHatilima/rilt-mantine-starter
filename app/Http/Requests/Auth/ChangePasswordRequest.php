@@ -24,17 +24,27 @@ class ChangePasswordRequest extends FormRequest
      */
     public function rules(): array
     {
-        return array_merge(
-            CurrentPasswordRule::rules(),
-            NewPasswordRule::rules(),
-        );
+        $user = auth()->user();
+
+        $rules = NewPasswordRule::rules();
+
+        if (! is_null($user->password)) {
+            $rules = array_merge($rules, CurrentPasswordRule::rules());
+        }
+
+        return $rules;
     }
 
     public function messages(): array
     {
-        return array_merge(
-            CurrentPasswordRule::messages(),
-            NewPasswordRule::messages(),
-        );
+        $user = auth()->user();
+
+        $messages = NewPasswordRule::messages();
+
+        if (! is_null($user->password)) {
+            $messages = array_merge($messages, CurrentPasswordRule::messages());
+        }
+
+        return $messages;
     }
 }
