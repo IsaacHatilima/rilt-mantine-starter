@@ -112,7 +112,7 @@ describe('Login', () => {
         const passwordInput = screen.getByPlaceholderText(/Password/i);
         const loginButton = screen.getByRole('button', { name: /Login/i });
 
-        // Simulates form inputss
+        // Simulates form inputs
         await userEvent.type(emailInput, 'testuser@example.com');
         await userEvent.type(passwordInput, 'password123');
 
