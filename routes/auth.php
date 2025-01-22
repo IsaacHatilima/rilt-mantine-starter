@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\NewPasswordController;
@@ -14,9 +15,15 @@ use Inertia\Inertia;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register'); // Done
+        ->name('register');
 
-    Route::post('register', [RegisteredUserController::class, 'store']); // Done
+    Route::post('register', [RegisteredUserController::class, 'store']);
+
+    Route::get('/google/redirect', [GoogleAuthController::class, 'redirectToGoogle'])
+        ->name('google.redirect');
+
+    Route::get('/google/callback', [GoogleAuthController::class, 'handleGoogleCallback'])
+        ->name('google.callback');
 
     Route::get('login', [LoginController::class, 'create'])
         ->name('login');
@@ -26,26 +33,26 @@ Route::middleware('guest')->group(function () {
     })->name('two-factor.login');
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
-        ->name('password.request'); // Done
+        ->name('password.request');
 
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
-        ->name('password.email'); // Done
+        ->name('password.email');
 
     Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-        ->name('password.reset'); // Done
+        ->name('password.reset');
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
-        ->name('password.store'); // Done
+        ->name('password.store');
 });
 
 Route::middleware('auth')->group(function () {
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify'); // Done
+        ->name('verification.verify');
 
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
         ->middleware('throttle:6,1')
-        ->name('verification.send'); // Done
+        ->name('verification.send');
 
     Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
         ->name('password.confirm');
@@ -55,5 +62,5 @@ Route::middleware('auth')->group(function () {
     Route::put('password', [SecurityController::class, 'update'])->name('password.update');
 
     Route::post('logout', [LogoutController::class, 'destroy'])
-        ->name('logout'); // Done
+        ->name('logout');
 });

@@ -5,6 +5,7 @@ namespace App\Actions\Auth;
 use App\Actions\Profile\ProfileManagerAction;
 use App\Models\User;
 use App\Notifications\VerifyEmailNotification;
+use Illuminate\Support\Str;
 
 readonly class RegisterAction
 {
@@ -26,6 +27,19 @@ readonly class RegisterAction
         $this->profileManagerAction->create_profile($request, $user);
 
         $user->notify(new VerifyEmailNotification($user));
+
+        return $user;
+    }
+
+    public function googleRegister($request)
+    {
+        $user = User::create([
+            'email' => $request->email,
+            'password' => Str::random(),
+            'email_verified_at' => now(),
+        ]);
+
+        $this->profileManagerAction->create_profile($request, $user);
 
         return $user;
     }
