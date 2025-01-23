@@ -28,7 +28,7 @@ class GoogleAuthController extends Controller
             return redirect()->route('login')->with(['googleError' => 'Your Google account is missing names.']);
         }
 
-        $user = User::where('email', $googleUser->user['email'])->first();
+        $user = User::where('email', $googleUser->email)->first();
 
         if (! $user) {
 

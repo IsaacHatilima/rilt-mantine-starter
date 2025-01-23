@@ -6,7 +6,7 @@ use App\Actions\Profile\ProfileManagerAction;
 use App\Models\User;
 use App\Notifications\VerifyEmailNotification;
 
-readonly class RegisterAction
+class RegisterAction
 {
     /**
      * Create a new class instance.
