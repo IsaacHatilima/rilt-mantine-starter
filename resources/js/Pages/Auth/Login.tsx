@@ -16,7 +16,13 @@ interface SocialAuthProps {
     google: boolean;
 }
 
-export default function Login({ status }: { status?: string }) {
+export default function Login({
+    status,
+    googleError,
+}: {
+    status?: string;
+    googleError?: string;
+}) {
     const socialAuth = usePage().props.socialAuth as SocialAuthProps;
     const [loading, { open, close }] = useDisclosure();
     const { data, setData, post, errors, reset } = useForm<{
@@ -48,6 +54,12 @@ export default function Login({ status }: { status?: string }) {
 
             {status && (
                 <Alert variant="light" color="green" title="Success">
+                    {status}
+                </Alert>
+            )}
+
+            {googleError && (
+                <Alert variant="light" color="yellow" title="Warning">
                     {status}
                 </Alert>
             )}
@@ -131,13 +143,14 @@ export default function Login({ status }: { status?: string }) {
 
             <div className="mt-3 flex flex-col items-center justify-between gap-1">
                 {socialAuth.google && (
-                    <Link
-                        href="#"
+                    // Link works of SPA and throws CORS error
+                    <a
+                        href={route('google.redirect')}
                         className="flex w-full items-center justify-center gap-2 rounded-md bg-white p-2 shadow-lg hover:bg-gray-50"
                     >
                         <FcGoogle size={25} />
                         Continue with Google
-                    </Link>
+                    </a>
                 )}
             </div>
             <div className="mt-2 flex items-center justify-end">

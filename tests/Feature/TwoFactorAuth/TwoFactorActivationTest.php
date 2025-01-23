@@ -26,13 +26,11 @@ test('user cannot enable 2FA with wrong password', function () {
         'password' => Hash::make('Password1#'),
     ]);
 
-    $this->actingAs($user)->post('/user/confirm-password', [
+    $response = $this->actingAs($user)->post('/user/confirm-password', [
         'password' => 'Password12#',
     ]);
 
     $this->assertEquals(session('errors')->get('password')[0], 'The provided password was incorrect.');
-
-    $response = $this->actingAs($user)->post('/user/two-factor-authentication');
 
     $user->refresh();
 

@@ -26,6 +26,7 @@ export type PageProps<
 > = T & {
     auth: {
         user: User;
+        social_auth: boolean;
     };
     ziggy: Config & { location: string };
 };
