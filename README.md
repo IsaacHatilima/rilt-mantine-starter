@@ -1,5 +1,7 @@
 # React Inertia Laravel Tailwind (RILT) with Mantine UI Starter Project
 
+[RILT Starter Template](https://github.com/IsaacHatilima/rilt-mantine-starter)
+
 ## About The Project
 
 This project is a comprehensive starter template designed to simplify and accelerate the development of modern web
