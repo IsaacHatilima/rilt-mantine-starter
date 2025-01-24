@@ -48,17 +48,15 @@ export default function DeleteUserForm({
     return (
         <section className={`space-y-6 ${className}`}>
             <header>
-                <div className="mb-2 w-full rounded-md bg-red-300 p-3">
+                <div className="mb-2 w-full rounded-md bg-red-600 p-3">
                     <h2 className="text-lg font-medium text-white">
                         Danger Zone
                     </h2>
                 </div>
 
-                <h2 className="text-lg font-medium text-gray-900">
-                    Delete Account
-                </h2>
+                <h2 className="text-lg font-medium">Delete Account</h2>
 
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-1 text-sm">
                     Once your account is deleted, all of its resources and data
                     will be permanently deleted. Before deleting your account,
                     please download any data or information that you wish to
@@ -66,15 +64,17 @@ export default function DeleteUserForm({
                 </p>
             </header>
 
-            <Button
-                onClick={() => {
-                    firstHandlers.open();
-                }}
-                variant="filled"
-                color="red"
-            >
-                Delete Account
-            </Button>
+            <div className="flex justify-end">
+                <Button
+                    onClick={() => {
+                        firstHandlers.open();
+                    }}
+                    variant="filled"
+                    color="red"
+                >
+                    Delete Account
+                </Button>
+            </div>
 
             <Modal
                 opened={firstOpened}

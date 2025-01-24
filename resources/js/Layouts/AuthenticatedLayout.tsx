@@ -7,7 +7,6 @@ import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { PropsWithChildren, ReactNode } from 'react';
 
 export default function Authenticated({
-    header,
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user;
