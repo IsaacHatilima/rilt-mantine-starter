@@ -89,10 +89,10 @@ function TwoFactorConfig() {
     return (
         <section>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">
+                <h2 className="text-lg font-medium">
                     Two-Factor Authentication Settings
                 </h2>
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-1 text-sm">
                     If you logout before completing the process, deactivate and
                     restart.
                 </p>

@@ -52,10 +52,8 @@ export default function UpdateProfileInformation({
     return (
         <section className="w-full">
             <header>
-                <h2 className="text-lg font-medium text-gray-900">
-                    Profile Information
-                </h2>
-                <p className="mt-1 text-sm text-gray-600">
+                <h2 className="text-lg font-medium">Profile Information</h2>
+                <p className="mt-1 text-sm">
                     Update your account's profile information and email address.
                 </p>
             </header>

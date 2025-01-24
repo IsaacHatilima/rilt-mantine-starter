@@ -1,15 +1,43 @@
 import { User } from '@/types';
 import { Link, router } from '@inertiajs/react';
-import { ActionIcon, Menu } from '@mantine/core';
-import { CiUser } from 'react-icons/ci';
+import { ActionIcon, Menu, useMantineColorScheme } from '@mantine/core';
+import { CiDark, CiLight, CiUser } from 'react-icons/ci';
 
 export default function TopNav({ user }: { user: User }) {
+    const { colorScheme, setColorScheme } = useMantineColorScheme();
+
     return (
         <>
             <div className="pr-4">
                 <Menu shadow="md" width={200}>
                     <Menu.Target>
-                        <ActionIcon variant="outline" size="xl" radius="xl">
+                        <ActionIcon
+                            variant="outline"
+                            size="md"
+                            radius="xl"
+                            className="mr-2"
+                            onClick={() =>
+                                setColorScheme(
+                                    colorScheme === 'light' ? 'dark' : 'light',
+                                )
+                            }
+                        >
+                            {colorScheme === 'light' ? (
+                                <CiDark
+                                    style={{ width: '60%', height: '60%' }}
+                                />
+                            ) : (
+                                <CiLight
+                                    style={{ width: '60%', height: '60%' }}
+                                />
+                            )}
+                        </ActionIcon>
+                    </Menu.Target>
+                </Menu>
+
+                <Menu shadow="md" width={200}>
+                    <Menu.Target>
+                        <ActionIcon variant="outline" size="md" radius="xl">
                             <CiUser style={{ width: '60%', height: '60%' }} />
                         </ActionIcon>
                     </Menu.Target>
