@@ -1,7 +1,7 @@
-import { useNotification } from '@/Context/NotificationContext';
 import { useForm } from '@inertiajs/react';
 import { Button, Modal, PasswordInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import axios from 'axios';
 import React, { useState } from 'react';
 
@@ -10,7 +10,6 @@ function DeactivateTwoFactor({ refreshUser }: { refreshUser: () => void }) {
         useDisclosure();
     const [opened, { open: openModal, close: closeModal }] =
         useDisclosure(false);
-    const { triggerNotification } = useNotification();
     const [errors, setErrors] = useState<{ password?: string }>({});
 
     const { data, setData } = useForm({
@@ -23,20 +22,20 @@ function DeactivateTwoFactor({ refreshUser }: { refreshUser: () => void }) {
             .delete('/user/two-factor-authentication')
             .then(() => {
                 refreshUser();
-                triggerNotification(
-                    'Success',
-                    '2FA has been de-activated.',
-                    'green',
-                );
+                notifications.show({
+                    title: 'Success',
+                    message: '2FA has been de-activated.',
+                    color: 'green',
+                });
                 closeModal();
                 closeLoading();
             })
             .catch(() => {
-                triggerNotification(
-                    'Warning',
-                    'Unable to de-activate 2FA.',
-                    'yellow',
-                );
+                notifications.show({
+                    title: 'Warning',
+                    message: 'Unable to de-activate 2FA.',
+                    color: 'yellow',
+                });
                 closeLoading();
             });
     };

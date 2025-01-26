@@ -1,18 +1,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TwoFactorConfig from '@/Pages/Profile/Partials/TwoFactorConfig';
 import { Head } from '@inertiajs/react';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import { Card } from '@mantine/core';
+import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 
 function Security() {
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Profile
-                </h2>
-            }
-        >
+        <AuthenticatedLayout>
             <Head title="Profile" />
 
             <div className="py-12">

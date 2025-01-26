@@ -1,9 +1,9 @@
-import { useNotification } from '@/Context/NotificationContext';
 import { User } from '@/types';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { Button, Select, TextInput } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { FormEvent, FormEventHandler } from 'react';
@@ -16,11 +16,9 @@ export default function UpdateProfileInformation({
 }: {
     mustVerifyEmail: boolean;
     status?: string;
-    className?: string;
 }) {
     const user: User = usePage().props.auth.user;
     const [loading, { open, close }] = useDisclosure();
-    const { triggerNotification } = useNotification();
 
     const { data, setData, patch, errors } = useForm({
         first_name: user.profile.first_name,
@@ -37,11 +35,11 @@ export default function UpdateProfileInformation({
         open();
         patch(route('profile.update'), {
             onSuccess: () => {
-                triggerNotification(
-                    'Success',
-                    'Your profile has been updated successfully!',
-                    'green',
-                );
+                notifications.show({
+                    title: 'Success',
+                    message: 'Your profile has been updated successfully!',
+                    color: 'green',
+                });
             },
             onFinish: () => {
                 close();
@@ -61,15 +59,14 @@ export default function UpdateProfileInformation({
             <form onSubmit={submit} className="mt-6">
                 <div className="mb-4 grid w-full gap-4 md:grid-cols-3">
                     <TextInput
-                        className="w-full"
                         id="firstname"
-                        type="text"
                         name="firstname"
                         value={data.first_name}
                         error={errors.first_name}
                         withAsterisk
                         autoComplete="firstname"
                         mt="md"
+                        autoFocus
                         label="First Name"
                         placeholder="First Name"
                         onChange={(e) => setData('first_name', e.target.value)}
@@ -82,7 +79,6 @@ export default function UpdateProfileInformation({
                     />
                     <TextInput
                         id="lastname"
-                        type="text"
                         name="lastname"
                         value={data.last_name}
                         error={errors.last_name}
@@ -102,7 +98,6 @@ export default function UpdateProfileInformation({
 
                     <TextInput
                         id="email"
-                        type="email"
                         name="email"
                         value={data.email}
                         error={errors.email}

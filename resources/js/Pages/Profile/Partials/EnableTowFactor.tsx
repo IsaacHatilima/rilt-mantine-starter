@@ -1,7 +1,7 @@
-import { useNotification } from '@/Context/NotificationContext';
 import { useForm } from '@inertiajs/react';
 import { Button, Modal, PasswordInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import axios from 'axios';
 import React, { useState } from 'react';
 
@@ -10,7 +10,6 @@ function EnableTowFactor({ refreshUser }: { refreshUser: () => void }) {
         useDisclosure(false);
     const [loading, { open: openLoading, close: closeLoading }] =
         useDisclosure();
-    const { triggerNotification } = useNotification();
     const [errors, setErrors] = useState<{ password?: string }>({});
 
     const { data, setData } = useForm({
@@ -42,20 +41,20 @@ function EnableTowFactor({ refreshUser }: { refreshUser: () => void }) {
             .post('/user/two-factor-authentication')
             .then(() => {
                 refreshUser();
-                triggerNotification(
-                    'Success',
-                    '2FA has been enabled.',
-                    'green',
-                );
+                notifications.show({
+                    title: 'Success',
+                    message: '2FA has been enabled.',
+                    color: 'green',
+                });
                 closeModal();
                 closeLoading();
             })
             .catch(() => {
-                triggerNotification(
-                    'Warning',
-                    'Unable to enable 2FA.',
-                    'yellow',
-                );
+                notifications.show({
+                    title: 'Warning',
+                    message: 'Unable to enable 2FA.',
+                    color: 'yellow',
+                });
                 closeLoading();
             });
     };

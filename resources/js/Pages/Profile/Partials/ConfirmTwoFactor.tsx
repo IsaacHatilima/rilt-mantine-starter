@@ -1,7 +1,7 @@
-import { useNotification } from '@/Context/NotificationContext';
 import { useForm } from '@inertiajs/react';
 import { Button, Modal, PinInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import axios from 'axios';
 import React from 'react';
 
@@ -13,7 +13,6 @@ function ConfirmTwoFactor({ refreshUser }: { refreshUser: () => void }) {
     const { data, setData } = useForm({
         code: '',
     });
-    const { triggerNotification } = useNotification();
 
     const handleConfirmTwoFactor = (e: React.FormEvent) => {
         e.preventDefault();
@@ -24,20 +23,20 @@ function ConfirmTwoFactor({ refreshUser }: { refreshUser: () => void }) {
             })
             .then(() => {
                 refreshUser();
-                triggerNotification(
-                    'Success',
-                    '2FA has been confirmed.',
-                    'green',
-                );
+                notifications.show({
+                    title: 'Success',
+                    message: '2FA has been confirmed.',
+                    color: 'green',
+                });
                 closeModal();
                 closeLoading();
             })
             .catch(() => {
-                triggerNotification(
-                    'Warning',
-                    'Unable to confirm 2FA.',
-                    'yellow',
-                );
+                notifications.show({
+                    title: 'Warning',
+                    message: 'Unable to confirm 2FA.',
+                    color: 'yellow',
+                });
                 closeLoading();
             });
     };

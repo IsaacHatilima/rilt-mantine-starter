@@ -1,16 +1,11 @@
-import { useNotification } from '@/Context/NotificationContext';
 import { useForm } from '@inertiajs/react';
 import { Button, Modal, PasswordInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import { FormEvent, FormEventHandler, useRef } from 'react';
 
-export default function DeleteUserForm({
-    className = '',
-}: {
-    className?: string;
-}) {
+export default function DeleteUserForm() {
     const [loading, { open, close }] = useDisclosure(false);
-    const { triggerNotification } = useNotification();
     const passwordInput = useRef<HTMLInputElement>(null);
     const [firstOpened, firstHandlers] = useDisclosure(false);
 
@@ -31,11 +26,11 @@ export default function DeleteUserForm({
         destroy(route('profile.destroy'), {
             preserveScroll: true,
             onSuccess: () => {
-                triggerNotification(
-                    'Success',
-                    'Your profile has been updated successfully!',
-                    'green',
-                );
+                notifications.show({
+                    title: 'Success',
+                    message: 'Your profile has been deleted successfully!',
+                    color: 'green',
+                });
             },
             onError: () => passwordInput.current?.focus(),
             onFinish: () => {
@@ -46,7 +41,7 @@ export default function DeleteUserForm({
     };
 
     return (
-        <section className={`space-y-6 ${className}`}>
+        <section className="space-y-6">
             <header>
                 <div className="mb-2 w-full rounded-md bg-red-600 p-3">
                     <h2 className="text-lg font-medium text-white">
@@ -85,11 +80,11 @@ export default function DeleteUserForm({
                 }}
             >
                 <form onSubmit={deleteUser} className="p-6">
-                    <h2 className="text-lg font-medium text-gray-900">
+                    <h2 className="text-lg font-medium">
                         Are you sure you want to delete your account?
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-600">
+                    <p className="mt-1 text-sm">
                         Once your account is deleted, all of its resources and
                         data will be permanently deleted. Please enter your
                         password to confirm you would like to permanently delete
@@ -99,7 +94,6 @@ export default function DeleteUserForm({
                     <div className="mt-6">
                         <PasswordInput
                             id="current_password"
-                            type="password"
                             name="current_password"
                             value={data.current_password}
                             error={errors.current_password}
