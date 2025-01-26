@@ -67,7 +67,6 @@ export default function Login({
             <form onSubmit={submit}>
                 <TextInput
                     id="email"
-                    type="email"
                     name="email"
                     value={data.email}
                     error={errors.email}
@@ -87,11 +86,9 @@ export default function Login({
 
                 <PasswordInput
                     id="password"
-                    type="password"
                     name="password"
                     value={data.password}
                     error={errors.password}
-                    autoComplete="password"
                     mt="md"
                     label="Password"
                     placeholder="Password"
