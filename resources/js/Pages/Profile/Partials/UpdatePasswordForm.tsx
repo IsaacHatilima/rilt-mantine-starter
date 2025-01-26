@@ -1,16 +1,13 @@
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { Button, PasswordInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { FormEventHandler, useRef } from 'react';
 
-export default function UpdatePasswordForm({
-    className = '',
-}: {
-    className?: string;
-}) {
+export default function UpdatePasswordForm() {
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
     const [loading, { open, close }] = useDisclosure();
+    const social_auth = usePage().props.auth.social_auth;
 
     const { data, setData, errors, put, reset } = useForm({
         current_password: '',
@@ -43,39 +40,39 @@ export default function UpdatePasswordForm({
     };
 
     return (
-        <section className={className}>
+        <section>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">
-                    Update Password
-                </h2>
+                <h2 className="text-lg font-medium">Update Password</h2>
 
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-1 text-sm">
                     Ensure your account is using a long, random password to stay
                     secure.
                 </p>
             </header>
 
             <form onSubmit={updatePassword} className="mt-6 space-y-6">
-                <PasswordInput
-                    id="current_password"
-                    type="password"
-                    name="current_password"
-                    value={data.current_password}
-                    error={errors.current_password}
-                    autoComplete="current_password"
-                    mt="md"
-                    label="Current Password"
-                    placeholder="Current Password"
-                    onChange={(e) =>
-                        setData('current_password', e.target.value)
-                    }
-                    inputWrapperOrder={[
-                        'label',
-                        'input',
-                        'description',
-                        'error',
-                    ]}
-                />
+                {!social_auth && (
+                    <PasswordInput
+                        id="current_password"
+                        type="password"
+                        name="current_password"
+                        value={data.current_password}
+                        error={errors.current_password}
+                        autoComplete="current_password"
+                        mt="md"
+                        label="Current Password"
+                        placeholder="Current Password"
+                        onChange={(e) =>
+                            setData('current_password', e.target.value)
+                        }
+                        inputWrapperOrder={[
+                            'label',
+                            'input',
+                            'description',
+                            'error',
+                        ]}
+                    />
+                )}
 
                 <PasswordInput
                     id="password"
