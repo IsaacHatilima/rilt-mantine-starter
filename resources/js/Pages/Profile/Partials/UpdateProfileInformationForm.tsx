@@ -66,6 +66,7 @@ export default function UpdateProfileInformation({
                         withAsterisk
                         autoComplete="firstname"
                         mt="md"
+                        autoFocus
                         label="First Name"
                         placeholder="First Name"
                         onChange={(e) => setData('first_name', e.target.value)}
