@@ -1,11 +1,10 @@
 import { useForm, usePage } from '@inertiajs/react';
 import { Button, PasswordInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { FormEventHandler, useRef } from 'react';
+import { notifications } from '@mantine/notifications';
+import { FormEventHandler } from 'react';
 
 export default function UpdatePasswordForm() {
-    const passwordInput = useRef<HTMLInputElement>(null);
-    const currentPasswordInput = useRef<HTMLInputElement>(null);
     const [loading, { open, close }] = useDisclosure();
     const social_auth = usePage().props.auth.social_auth;
 
@@ -21,17 +20,27 @@ export default function UpdatePasswordForm() {
 
         put(route('password.update'), {
             preserveScroll: true,
-            onSuccess: () => reset(),
+            onSuccess: () => {
+                reset();
+                notifications.show({
+                    title: 'Success',
+                    message: 'Password Updated.',
+                    color: 'green',
+                });
+            },
             onError: (errors) => {
                 if (errors.password) {
                     reset('password', 'password_confirmation');
-                    passwordInput.current?.focus();
                 }
 
                 if (errors.current_password) {
                     reset('current_password');
-                    currentPasswordInput.current?.focus();
                 }
+                notifications.show({
+                    title: 'Warning',
+                    message: 'Unable to update Password.',
+                    color: 'yellow',
+                });
             },
             onFinish: () => {
                 close();
@@ -54,12 +63,12 @@ export default function UpdatePasswordForm() {
                 {!social_auth && (
                     <PasswordInput
                         id="current_password"
-                        type="password"
                         name="current_password"
                         value={data.current_password}
                         error={errors.current_password}
                         autoComplete="current_password"
                         mt="md"
+                        withAsterisk
                         label="Current Password"
                         placeholder="Current Password"
                         onChange={(e) =>
@@ -76,12 +85,12 @@ export default function UpdatePasswordForm() {
 
                 <PasswordInput
                     id="password"
-                    type="password"
                     name="password"
                     value={data.password}
                     error={errors.password}
                     autoComplete="password"
                     mt="md"
+                    withAsterisk
                     label="Password"
                     placeholder="Password"
                     onChange={(e) => setData('password', e.target.value)}
@@ -95,7 +104,7 @@ export default function UpdatePasswordForm() {
 
                 <PasswordInput
                     id="password_confirmation"
-                    type="password"
+                    withAsterisk
                     name="password_confirmation"
                     value={data.password_confirmation}
                     error={errors.password_confirmation}

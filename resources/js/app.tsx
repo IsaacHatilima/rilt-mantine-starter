@@ -1,13 +1,13 @@
-import '../css/app.css';
-import './bootstrap';
-
-import { NotificationProvider } from '@/Context/NotificationContext';
 import { createInertiaApp } from '@inertiajs/react';
 import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
+import { Notifications } from '@mantine/notifications';
+import '@mantine/notifications/styles.css';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot, hydrateRoot } from 'react-dom/client';
+import '../css/app.css';
+import './bootstrap';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -20,11 +20,10 @@ createInertiaApp({
         ),
     setup({ el, App, props }) {
         const RootComponent = (
-            <NotificationProvider>
-                <MantineProvider>
-                    <App {...props} />
-                </MantineProvider>
-            </NotificationProvider>
+            <MantineProvider>
+                <Notifications position="top-right" limit={5} />
+                <App {...props} />
+            </MantineProvider>
         );
 
         if (import.meta.env.SSR) {

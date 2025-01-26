@@ -1,4 +1,3 @@
-import { useNotification } from '@/Context/NotificationContext';
 import ConfirmTwoFactor from '@/Pages/Profile/Partials/ConfirmTwoFactor';
 import DeactivateTwoFactor from '@/Pages/Profile/Partials/DeactivateTwoFactor';
 import EnableTowFactor from '@/Pages/Profile/Partials/EnableTowFactor';
@@ -6,6 +5,7 @@ import { User } from '@/types';
 import { router, usePage } from '@inertiajs/react';
 import { Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 
@@ -15,7 +15,6 @@ function TwoFactorConfig() {
     const [qrCodeSvg, setQrCodeSvg] = useState<string | null>(null);
     const [recoveryCodes, setRecoveryCodes] = useState<string[] | null>(null);
     const [loading, { open, close }] = useDisclosure();
-    const { triggerNotification } = useNotification();
     useRef<ReturnType<typeof setTimeout> | null>(null);
     // Get 2FA QR Code
     const handleGetTwoFactorQRCode = () => {
@@ -52,18 +51,18 @@ function TwoFactorConfig() {
             .put(route('security.put'))
             .then(() => {
                 refreshUser();
-                triggerNotification(
-                    'Success',
-                    '2FA recovery codes copied.',
-                    'green',
-                );
+                notifications.show({
+                    title: 'Success',
+                    message: '2FA recovery codes copied.',
+                    color: 'green',
+                });
             })
             .catch(() => {
-                triggerNotification(
-                    'Warning',
-                    'Unable to copy 2FA recovery codes.',
-                    'yellow',
-                );
+                notifications.show({
+                    title: 'Warning',
+                    message: 'Unable to copy 2FA recovery codes.',
+                    color: 'yellow',
+                });
             });
     };
 
