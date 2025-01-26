@@ -112,14 +112,12 @@ export default function Login({
                                 setData('remember', e.target.checked)
                             }
                         />
-                        <span className="ms-2 text-sm text-gray-600">
-                            Remember me
-                        </span>
+                        <span className="ms-2 text-sm">Remember me</span>
                     </label>
 
                     <Link
                         href={route('password.request')}
-                        className="mt-3 rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        className="mt-3 rounded-md text-sm underline focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                         Forgot your password?
                     </Link>
@@ -143,20 +141,23 @@ export default function Login({
 
             <div className="mt-3 flex flex-col items-center justify-between gap-1">
                 {socialAuth.google && (
-                    // Link works of SPA and throws CORS error
-                    <a
-                        href={route('google.redirect')}
-                        className="flex w-full items-center justify-center gap-2 rounded-md bg-white p-2 shadow-lg hover:bg-gray-50"
+                    <Button
+                        variant="filled"
+                        color="black"
+                        fullWidth
+                        onClick={() =>
+                            (window.location.href = route('google.redirect'))
+                        }
                     >
                         <FcGoogle size={25} />
-                        Continue with Google
-                    </a>
+                        <span className="ml-2">Continue with Google</span>
+                    </Button>
                 )}
             </div>
             <div className="mt-2 flex items-center justify-end">
                 <Link
                     href={route('register')}
-                    className="mt-3 rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    className="mt-3 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                     Don't have an account? Register here
                 </Link>
