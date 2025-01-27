@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 
 function TwoFactorConfig() {
     const user: User = usePage().props.auth.user;
+    const setupCode = usePage().props.otpCode as string;
 
     const [qrCodeSvg, setQrCodeSvg] = useState<string | null>(null);
     const [recoveryCodes, setRecoveryCodes] = useState<string[] | null>(null);
@@ -98,10 +99,15 @@ function TwoFactorConfig() {
             </header>
             <div className="mt-4">
                 {qrCodeSvg && !user.two_factor_confirmed_at && (
-                    <div
-                        dangerouslySetInnerHTML={{ __html: qrCodeSvg }}
-                        className="qr-code my-10 flex items-center justify-center"
-                    />
+                    <div className="mb-4 flex flex-col items-center justify-center">
+                        <div
+                            dangerouslySetInnerHTML={{ __html: qrCodeSvg }}
+                            className="qr-code my-10 flex items-center justify-center"
+                        />
+                        <h1 className="font-bold text-black">
+                            Setup Code: {setupCode}
+                        </h1>
+                    </div>
                 )}
 
                 {recoveryCodes &&
