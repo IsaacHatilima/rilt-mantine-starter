@@ -16,7 +16,9 @@ class SecurityController extends Controller
 
     public function edit(Request $request): Response
     {
-        return Inertia::render('Profile/Security', []);
+        return Inertia::render('Profile/Security', [
+            'otpCode' => auth()->user()->two_factor_secret ? decrypt(auth()->user()->two_factor_secret) : '',
+        ]);
     }
 
     public function copy_recovery_codes()

@@ -1,3 +1,4 @@
+// app.css MUST be on top
 /* eslint-disable prettier/prettier */
 import { createInertiaApp } from '@inertiajs/react';
 import { localStorageColorSchemeManager, MantineProvider } from '@mantine/core';

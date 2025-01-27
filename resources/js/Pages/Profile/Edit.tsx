@@ -21,14 +21,24 @@ export default function Edit({
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                    <Card shadow="sm" padding="lg" radius="md" withBorder>
+                    <Card
+                        shadow="sm"
+                        padding="lg"
+                        radius="md"
+                        withBorder={false}
+                    >
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}
                             status={status}
                         />
                     </Card>
 
-                    <Card shadow="sm" padding="lg" radius="md" withBorder>
+                    <Card
+                        shadow="sm"
+                        padding="lg"
+                        radius="md"
+                        withBorder={false}
+                    >
                         <DeleteUserForm />
                     </Card>
                 </div>
