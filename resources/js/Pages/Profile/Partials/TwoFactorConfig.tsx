@@ -118,12 +118,10 @@ function TwoFactorConfig({ user }: { user: User }) {
                     )}
             </div>
 
-            {user.two_factor_secret &&
-            user.two_factor_recovery_codes &&
-            user.two_factor_confirmed_at ? (
+            {user.two_factor_secret && user.two_factor_recovery_codes ? (
                 <div className="flex flex-col items-center justify-center gap-2 md:flex-row">
                     <DeactivateTwoFactor />
-                    {!user.copied_codes && (
+                    {user.two_factor_confirmed_at && !user.copied_codes ? (
                         <div className="mt-2">
                             <Button
                                 type="button"
@@ -135,16 +133,14 @@ function TwoFactorConfig({ user }: { user: User }) {
                                 Copy Codes
                             </Button>
                         </div>
+                    ) : (
+                        <ConfirmTwoFactor />
                     )}
                 </div>
-            ) : user.two_factor_secret && user.two_factor_recovery_codes ? (
-                <div className="flex flex-col items-center justify-center gap-2 md:flex-row">
-                    {/*This still shows after setting user.two_factor_secret && user.two_factor_recovery_codes null*/}
-                    <DeactivateTwoFactor />
-                    <ConfirmTwoFactor />
-                </div>
             ) : (
-                <EnableTowFactor />
+                <div className="flex items-center justify-center">
+                    <EnableTowFactor />
+                </div>
             )}
         </section>
     );

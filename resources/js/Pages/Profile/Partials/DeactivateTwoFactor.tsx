@@ -67,7 +67,6 @@ function DeactivateTwoFactor() {
                             onChange={(e) =>
                                 setData('current_password', e.target.value)
                             }
-                            autoFocus={true}
                         />
 
                         <div className="my-4 flex items-center gap-4">

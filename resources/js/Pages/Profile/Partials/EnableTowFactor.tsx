@@ -37,8 +37,9 @@ function EnableTowFactor() {
     };
 
     return (
-        <div className="mt-2 flex items-center justify-center gap-4">
+        <div className="mt-2 flex w-96 items-center justify-center gap-4">
             <Button
+                fullWidth
                 onClick={openModal}
                 type="button"
                 variant="filled"
