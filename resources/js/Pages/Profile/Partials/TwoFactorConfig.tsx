@@ -2,15 +2,14 @@ import ConfirmTwoFactor from '@/Pages/Profile/Partials/ConfirmTwoFactor';
 import DeactivateTwoFactor from '@/Pages/Profile/Partials/DeactivateTwoFactor';
 import EnableTowFactor from '@/Pages/Profile/Partials/EnableTowFactor';
 import { User } from '@/types';
-import { router, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import { Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 
-function TwoFactorConfig() {
-    const user: User = usePage().props.auth.user;
+function TwoFactorConfig({ user }: { user: User }) {
     const setupCode = usePage().props.otpCode as string;
 
     const [qrCodeSvg, setQrCodeSvg] = useState<string | null>(null);
@@ -30,16 +29,6 @@ function TwoFactorConfig() {
         });
     };
 
-    function refreshUser() {
-        router.get(
-            route('security.edit'),
-            {},
-            {
-                preserveScroll: true,
-            },
-        );
-    }
-
     useEffect(() => {
         if (user.two_factor_secret && !user.copied_codes) {
             handleGetTwoFactorQRCode();
@@ -51,7 +40,6 @@ function TwoFactorConfig() {
         axios
             .put(route('security.put'))
             .then(() => {
-                refreshUser();
                 notifications.show({
                     title: 'Success',
                     message: '2FA recovery codes copied.',
@@ -130,12 +118,10 @@ function TwoFactorConfig() {
                     )}
             </div>
 
-            {user.two_factor_secret &&
-            user.two_factor_recovery_codes &&
-            user.two_factor_confirmed_at ? (
+            {user.two_factor_secret && user.two_factor_recovery_codes ? (
                 <div className="flex flex-col items-center justify-center gap-2 md:flex-row">
-                    <DeactivateTwoFactor refreshUser={refreshUser} />
-                    {!user.copied_codes && (
+                    <DeactivateTwoFactor />
+                    {user.two_factor_confirmed_at && !user.copied_codes ? (
                         <div className="mt-2">
                             <Button
                                 type="button"
@@ -147,15 +133,14 @@ function TwoFactorConfig() {
                                 Copy Codes
                             </Button>
                         </div>
+                    ) : (
+                        <ConfirmTwoFactor />
                     )}
                 </div>
-            ) : user.two_factor_secret && user.two_factor_recovery_codes ? (
-                <div className="flex flex-col items-center justify-center gap-2 md:flex-row">
-                    <DeactivateTwoFactor refreshUser={refreshUser} />
-                    <ConfirmTwoFactor refreshUser={refreshUser} />
-                </div>
             ) : (
-                <EnableTowFactor refreshUser={refreshUser} />
+                <div className="flex items-center justify-center">
+                    <EnableTowFactor />
+                </div>
             )}
         </section>
     );

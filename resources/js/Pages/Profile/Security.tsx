@@ -1,10 +1,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TwoFactorConfig from '@/Pages/Profile/Partials/TwoFactorConfig';
-import { Head } from '@inertiajs/react';
+import { User } from '@/types';
+import { Head, usePage } from '@inertiajs/react';
 import { Card } from '@mantine/core';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 
 function Security() {
+    const user: User = usePage().props.auth.user;
+
     return (
         <AuthenticatedLayout>
             <Head title="Profile" />
@@ -26,7 +29,7 @@ function Security() {
                         radius="md"
                         withBorder={false}
                     >
-                        <TwoFactorConfig />
+                        <TwoFactorConfig user={user} />
                     </Card>
                 </div>
             </div>

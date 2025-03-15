@@ -35,12 +35,6 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
                 'profile' => $request->user()?->profile,
-                'social_auth' => $request->user()?->password === null,
-            ],
-            'socialAuth' => [
-                'google' => config('auth.socialAuth.google'),
-                'github' => config('auth.socialAuth.github'),
-                'facebook' => config('auth.socialAuth.facebook'),
             ],
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),

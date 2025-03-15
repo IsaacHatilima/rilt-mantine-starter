@@ -18,6 +18,7 @@ class SecurityController extends Controller
     {
         return Inertia::render('Profile/Security', [
             'otpCode' => auth()->user()->two_factor_secret ? decrypt(auth()->user()->two_factor_secret) : '',
+            'social_auth' => $request->user()?->password === null,
         ]);
     }
 
@@ -25,7 +26,7 @@ class SecurityController extends Controller
     {
         auth()->user()->update(['copied_codes' => true]);
 
-        return response(null, 200);
+        return redirect()->back();
     }
 
     public function update(ChangePasswordRequest $request): RedirectResponse
