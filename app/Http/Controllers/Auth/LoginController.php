@@ -15,6 +15,11 @@ class LoginController extends Controller
     {
         return Inertia::render('Auth/Login', [
             'status' => session('status'),
+            'socialAuth' => [
+                'google' => config('auth.socialAuth.google'),
+                'github' => config('auth.socialAuth.github'),
+                'facebook' => config('auth.socialAuth.facebook'),
+            ],
         ]);
     }
 }
