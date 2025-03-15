@@ -2,61 +2,37 @@ import { useForm } from '@inertiajs/react';
 import { Button, Modal, PasswordInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import axios from 'axios';
-import React, { useState } from 'react';
+import React from 'react';
 
-function DeactivateTwoFactor({ refreshUser }: { refreshUser: () => void }) {
+function DeactivateTwoFactor() {
     const [loading, { open: openLoading, close: closeLoading }] =
         useDisclosure();
     const [opened, { open: openModal, close: closeModal }] =
         useDisclosure(false);
-    const [errors, setErrors] = useState<{ password?: string }>({});
 
-    const { data, setData } = useForm({
-        password: '',
+    const { data, setData, errors, put } = useForm({
+        current_password: '',
     });
 
-    const handleDeactivateTwoFactor = () => {
+    const handleDeactivateTwoFactor = (e: React.FormEvent) => {
+        e.preventDefault();
         openLoading();
-        axios
-            .delete('/user/two-factor-authentication')
-            .then(() => {
-                refreshUser();
+        put(route('disable.fortify'), {
+            preserveScroll: true,
+            onSuccess: () => {
                 notifications.show({
                     title: 'Success',
-                    message: '2FA has been de-activated.',
+                    message: '2FA has been disabled.',
                     color: 'green',
                 });
                 closeModal();
                 closeLoading();
-            })
-            .catch(() => {
-                notifications.show({
-                    title: 'Warning',
-                    message: 'Unable to de-activate 2FA.',
-                    color: 'yellow',
-                });
+            },
+            onError: () => {},
+            onFinish: () => {
                 closeLoading();
-            });
-    };
-
-    const handleTwoFAPasswordConfirm = (e: React.FormEvent) => {
-        e.preventDefault();
-        openLoading();
-
-        if (data.password !== '') {
-            axios
-                .post('/user/confirm-password', { password: data.password })
-                .then(() => {
-                    handleDeactivateTwoFactor();
-                })
-                .catch(() => {
-                    setErrors({ password: 'Invalid Password.' });
-                });
-        } else {
-            setErrors({ password: 'Password is required.' });
-            closeLoading();
-        }
+            },
+        });
     };
 
     return (
@@ -78,18 +54,18 @@ function DeactivateTwoFactor({ refreshUser }: { refreshUser: () => void }) {
                     Are you sure? this action cannot be undone.
                 </p>
                 <div className="px-4">
-                    <form onSubmit={handleTwoFAPasswordConfirm}>
+                    <form onSubmit={handleDeactivateTwoFactor}>
                         <PasswordInput
                             mt="xl"
                             label="Password"
                             placeholder="Password"
-                            error={errors.password}
+                            error={errors.current_password}
                             withAsterisk
                             inputWrapperOrder={['label', 'input', 'error']}
-                            name="password"
-                            value={data.password}
+                            name="current_password"
+                            value={data.current_password}
                             onChange={(e) =>
-                                setData('password', e.target.value)
+                                setData('current_password', e.target.value)
                             }
                             autoFocus={true}
                         />

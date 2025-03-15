@@ -26,7 +26,7 @@ class SecurityController extends Controller
     {
         auth()->user()->update(['copied_codes' => true]);
 
-        return response(null, 200);
+        return redirect()->back();
     }
 
     public function update(ChangePasswordRequest $request): RedirectResponse
