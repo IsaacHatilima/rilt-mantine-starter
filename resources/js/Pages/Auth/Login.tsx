@@ -16,13 +16,7 @@ interface SocialAuthProps {
     google: boolean;
 }
 
-export default function Login({
-    status,
-    googleError,
-}: {
-    status?: string;
-    googleError?: string;
-}) {
+export default function Login({ status }: { status?: string }) {
     const socialAuth = usePage().props.socialAuth as SocialAuthProps;
     const [loading, { open, close }] = useDisclosure();
     const LoginError = usePage().props.errors;
@@ -39,7 +33,7 @@ export default function Login({
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         open();
-        post('/login', {
+        post(route('login.store'), {
             onFinish: () => {
                 reset('password');
             },

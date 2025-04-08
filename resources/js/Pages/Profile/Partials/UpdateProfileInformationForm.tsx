@@ -18,6 +18,7 @@ export default function UpdateProfileInformation({
     status?: string;
 }) {
     const user: User = usePage().props.auth.user;
+    const profileUpdateError = usePage().props.errors;
     const [loading, { open, close }] = useDisclosure();
 
     const { data, setData, patch, errors } = useForm({
@@ -39,6 +40,13 @@ export default function UpdateProfileInformation({
                     title: 'Success',
                     message: 'Your profile has been updated successfully!',
                     color: 'green',
+                });
+            },
+            onError: () => {
+                notifications.show({
+                    title: 'Warning',
+                    message: profileUpdateError.error,
+                    color: 'yellow',
                 });
             },
             onFinish: () => {

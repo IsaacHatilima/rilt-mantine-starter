@@ -12,4 +12,15 @@ class UserRepository
     {
         return User::create($data);
     }
+
+    public function updateEmail(User $user, string $email): void
+    {
+        $normalized = strtolower($email);
+
+        if ($user->email !== $normalized) {
+            $user->email = $normalized;
+            $user->email_verified_at = null;
+            $user->save();
+        }
+    }
 }
