@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Actions\Auth\RegisterAction;
+use App\Actions\Auth\GoogleRegisterAction;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GoogleProvider;
+use Throwable;
 
 class GoogleAuthController extends Controller
 {
-    public function __construct(private readonly RegisterAction $registerAction) {}
+    private GoogleRegisterAction $googleRegisterAction;
+
+    public function __construct(GoogleRegisterAction $googleRegisterAction)
+    {
+        $this->googleRegisterAction = $googleRegisterAction;
+    }
 
     public function redirectToGoogle()
     {
@@ -25,7 +31,7 @@ class GoogleAuthController extends Controller
         $googleUser = $driver->stateless()->user();
 
         if (! isset($googleUser->user['given_name']) || ! isset($googleUser->user['family_name'])) {
-            return redirect()->route('login')->with(['googleError' => 'Your Google account is missing names.']);
+            return redirect()->route('login')->withErrors(['error' => 'Your Google account is missing names.']);
         }
 
         $user = User::where('email', $googleUser->email)->first();
@@ -38,7 +44,15 @@ class GoogleAuthController extends Controller
                 'last_name' => $googleUser->user['family_name'],
             ];
 
-            $user = $this->registerAction->googleRegister((object) $data);
+            try {
+                $user = $this->googleRegisterAction->execute((object) $data);
+            } catch (Throwable $e) {
+                report($e);
+
+                return redirect()->route('login')->withErrors([
+                    'error' => 'We couldn’t register your account. Please try again later.',
+                ]);
+            }
         }
 
         Auth::login($user);

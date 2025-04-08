@@ -25,6 +25,7 @@ export default function Login({
 }) {
     const socialAuth = usePage().props.socialAuth as SocialAuthProps;
     const [loading, { open, close }] = useDisclosure();
+    const LoginError = usePage().props.errors;
     const { data, setData, post, errors, reset } = useForm<{
         email: string;
         password: string;
@@ -58,9 +59,9 @@ export default function Login({
                 </Alert>
             )}
 
-            {googleError && (
+            {LoginError && (
                 <Alert variant="light" color="yellow" title="Warning">
-                    {status}
+                    {LoginError.error}
                 </Alert>
             )}
 

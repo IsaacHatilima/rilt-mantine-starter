@@ -1,11 +1,13 @@
 import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, useForm } from '@inertiajs/react';
-import { Button, PasswordInput, TextInput } from '@mantine/core';
+import { Head, useForm, usePage } from '@inertiajs/react';
+import { Alert, Button, PasswordInput, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { FormEventHandler } from 'react';
 
 export default function Register() {
     const [loading, { open, close }] = useDisclosure();
+    const registrationError = usePage().props.errors;
+
     const { data, setData, post, errors, reset } = useForm({
         first_name: '',
         last_name: '',
@@ -30,6 +32,12 @@ export default function Register() {
     return (
         <GuestLayout>
             <Head title="Register" />
+
+            {registrationError && (
+                <Alert variant="light" color="yellow" title="Warning">
+                    {registrationError.error}
+                </Alert>
+            )}
 
             <form onSubmit={submit}>
                 <TextInput

@@ -2,8 +2,6 @@
 
 namespace App\Actions\Profile;
 
-use App\Models\Profile;
-
 class ProfileManagerAction
 {
     /**
@@ -12,15 +10,6 @@ class ProfileManagerAction
     public function __construct()
     {
         //
-    }
-
-    public function create_profile($request, $user)
-    {
-        return Profile::create([
-            'user_id' => $user->id,
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-        ]);
     }
 
     public function update_profile($request): void

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use Throwable;
 
 class RegisteredUserController extends Controller
 {
@@ -21,7 +22,15 @@ class RegisteredUserController extends Controller
      */
     public function store(RegisterRequest $request)
     {
-        $user = $this->registerAction->register($request);
+        try {
+            $user = $this->registerAction->execute($request);
+        } catch (Throwable $e) {
+            report($e);
+
+            return redirect()->route('login')->withErrors([
+                'error' => 'We couldn’t register your account. Please try again later.',
+            ]);
+        }
 
         Auth::login($user);
 
