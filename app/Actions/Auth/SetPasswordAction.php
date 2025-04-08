@@ -18,14 +18,14 @@ class SetPasswordAction
         //
     }
 
-    public function check_token($email): bool
+    public function checkToken($email): bool
     {
         return DB::table('password_reset_tokens')
             ->where('email', $email)
             ->exists();
     }
 
-    public function set_password($request)
+    public function setPassword($request)
     {
         return Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
@@ -40,7 +40,7 @@ class SetPasswordAction
         );
     }
 
-    public function change_password($request): void
+    public function changePassword($request): void
     {
         $request->user()->update([
             'password' => Hash::make($request->password),

@@ -13,7 +13,7 @@ class CustomFortifyController extends Controller
 {
     /*
      * This design decision was preferred to have custom fortify manager routes
-     * and use one password confirm manager
+     * and use one password confirm request class
      * */
     public function enable(CurrentPasswordRequest $request, EnableTwoFactorAuthentication $enable2FA)
     {

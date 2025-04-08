@@ -21,7 +21,7 @@ class NewPasswordController extends Controller
      */
     public function create(Request $request): Response
     {
-        $tokenValidity = $this->setPasswordAction->check_token($request->email);
+        $tokenValidity = $this->setPasswordAction->checkToken($request->email);
 
         return Inertia::render($tokenValidity ? 'Auth/ResetPassword' : 'Errors/PasswordReset', [
             'email' => $request->email,
@@ -36,7 +36,7 @@ class NewPasswordController extends Controller
      */
     public function store(SetPasswordRequest $request): RedirectResponse
     {
-        $status = $this->setPasswordAction->set_password($request);
+        $status = $this->setPasswordAction->setPassword($request);
 
         if ($status == Password::PASSWORD_RESET) {
             return redirect()->route('login')->with('status', __($status));

@@ -43,6 +43,12 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        return Inertia::render('Auth/Register', [
+            'socialAuth' => [
+                'google' => config('auth.socialAuth.google'),
+                'github' => config('auth.socialAuth.github'),
+                'facebook' => config('auth.socialAuth.facebook'),
+            ],
+        ]);
     }
 }

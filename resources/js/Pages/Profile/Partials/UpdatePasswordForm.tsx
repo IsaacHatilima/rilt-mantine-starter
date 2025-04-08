@@ -6,7 +6,7 @@ import { FormEventHandler } from 'react';
 
 export default function UpdatePasswordForm() {
     const [loading, { open, close }] = useDisclosure();
-    const social_auth = usePage().props.auth.social_auth;
+    const socialAuth: boolean = usePage().props.socialAuth as boolean;
 
     const { data, setData, errors, put, reset } = useForm({
         current_password: '',
@@ -55,12 +55,12 @@ export default function UpdatePasswordForm() {
 
                 <p className="mt-1 text-sm">
                     Ensure your account is using a long, random password to stay
-                    secure.
+                    secure.xxxxxxx
                 </p>
             </header>
 
             <form onSubmit={updatePassword} className="mt-6 space-y-6">
-                {!social_auth && (
+                {socialAuth ? (
                     <PasswordInput
                         id="current_password"
                         name="current_password"
@@ -81,6 +81,8 @@ export default function UpdatePasswordForm() {
                             'error',
                         ]}
                     />
+                ) : (
+                    ''
                 )}
 
                 <PasswordInput

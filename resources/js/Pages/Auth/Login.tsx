@@ -14,6 +14,8 @@ import GuestLayout from '../../Layouts/GuestLayout';
 
 interface SocialAuthProps {
     google: boolean;
+    github: boolean;
+    facebook: boolean;
 }
 
 export default function Login({ status }: { status?: string }) {
@@ -53,7 +55,7 @@ export default function Login({ status }: { status?: string }) {
                 </Alert>
             )}
 
-            {LoginError && (
+            {LoginError.error && (
                 <Alert variant="light" color="yellow" title="Warning">
                     {LoginError.error}
                 </Alert>
