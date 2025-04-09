@@ -1,11 +1,27 @@
 import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, useForm } from '@inertiajs/react';
-import { Button, PasswordInput, TextInput } from '@mantine/core';
+import { Head, useForm, usePage } from '@inertiajs/react';
+import {
+    Alert,
+    Button,
+    Divider,
+    PasswordInput,
+    TextInput,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { FormEventHandler } from 'react';
+import { FcGoogle } from 'react-icons/fc';
+
+interface SocialAuthProps {
+    google: boolean;
+    github: boolean;
+    facebook: boolean;
+}
 
 export default function Register() {
     const [loading, { open, close }] = useDisclosure();
+    const socialAuth = usePage().props.socialAuth as SocialAuthProps;
+    const registrationError = usePage().props.errors;
+
     const { data, setData, post, errors, reset } = useForm({
         first_name: '',
         last_name: '',
@@ -30,6 +46,12 @@ export default function Register() {
     return (
         <GuestLayout>
             <Head title="Register" />
+
+            {registrationError.error && (
+                <Alert variant="light" color="yellow" title="Warning">
+                    {registrationError.error}
+                </Alert>
+            )}
 
             <form onSubmit={submit}>
                 <TextInput
@@ -145,6 +167,23 @@ export default function Register() {
                     </Button>
                 </div>
             </form>
+            <Divider my="xs" label="Or" labelPosition="center" />
+
+            <div className="mt-3 flex flex-col items-center justify-between gap-1">
+                {socialAuth.google && (
+                    <Button
+                        variant="filled"
+                        color="black"
+                        fullWidth
+                        onClick={() =>
+                            (window.location.href = route('google.redirect'))
+                        }
+                    >
+                        <FcGoogle size={25} />
+                        <span className="ml-2">Continue with Google</span>
+                    </Button>
+                )}
+            </div>
         </GuestLayout>
     );
 }

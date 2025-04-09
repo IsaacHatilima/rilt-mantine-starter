@@ -12,8 +12,8 @@ use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
 class CustomFortifyController extends Controller
 {
     /*
-     * This design decision was preferred to have custom fortify manager routes
-     * and use one password confirm manager
+     * This design decision was preferred to have custom fortify manager
+     * and use one password confirm request class
      * */
     public function enable(CurrentPasswordRequest $request, EnableTwoFactorAuthentication $enable2FA)
     {

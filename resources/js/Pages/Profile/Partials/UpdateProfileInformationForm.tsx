@@ -25,9 +25,7 @@ export default function UpdateProfileInformation({
         last_name: user.profile.last_name,
         email: user.email,
         gender: user.profile.gender,
-        date_of_birth: user.profile.date_of_birth
-            ? dayjs(user.profile.date_of_birth).format('YYYY-MM-DD')
-            : null,
+        date_of_birth: user.profile.date_of_birth ?? null,
     });
 
     const submit: FormEventHandler = (e: FormEvent<Element>): void => {
@@ -124,6 +122,7 @@ export default function UpdateProfileInformation({
                             { value: 'male', label: 'Male' },
                             { value: 'female', label: 'Female' },
                             { value: 'other', label: 'Other' },
+                            { value: 'non-binary', label: 'Non Binary' },
                         ]}
                         onChange={(_value, option) => {
                             setData('gender', option.value);
@@ -146,7 +145,7 @@ export default function UpdateProfileInformation({
                                     dayjs(date).format('YYYY-MM-DD');
                                 setData('date_of_birth', formattedDate);
                             } else {
-                                setData('date_of_birth', null);
+                                setData('date_of_birth', '');
                             }
                         }}
                         valueFormat="YYYY-MM-DD"

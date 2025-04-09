@@ -14,7 +14,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
         e.preventDefault();
         open();
 
-        post(route('password.email'), {
+        post(route('password.reset.store'), {
             onFinish: () => {
                 reset('email');
             },

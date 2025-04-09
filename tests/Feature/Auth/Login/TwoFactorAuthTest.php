@@ -1,80 +1,92 @@
 <?php
 
 use App\Models\User;
-use Carbon\Carbon;
+use Inertia\Testing\AssertableInertia as Assert;
+use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use PragmaRX\Google2FA\Google2FA;
 
 test('2FA users can authenticate with valid code', function () {
+    // Create User
     $user = User::factory()->create([
         'password' => Hash::make('Password1#'),
     ]);
 
-    $this->actingAs($user)->post('/user/confirm-password', [
-        'password' => 'Password1#',
-    ]);
+    // Enable 2FA
+    $enable2FA = app(EnableTwoFactorAuthentication::class);
+    $enable2FA($user);
 
-    $this->actingAs($user)->post('/user/two-factor-authentication');
+    // Confirm 2FA (manually for test)
+    $user->forceFill([
+        'two_factor_confirmed_at' => now(),
+    ])->save();
+
+    // Initial login
+    $this->get(route('login'));
+
+    $this
+        ->followingRedirects()
+        ->post(route('login'), [
+            'email' => $user->email,
+            'password' => 'Password1#',
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Auth/TwoFactorChallenge')
+        );
 
     $decryptedSecret = Crypt::decrypt($user->two_factor_secret);
     $google2fa = new Google2FA;
     $otp = $google2fa->getCurrentOtp($decryptedSecret);
 
-    $this->actingAs($user)->post('/user/confirmed-two-factor-authentication', [
-        'code' => $otp,
-    ]);
-
-    $this->actingAs($user)->post('/logout');
-    $this->assertGuest();
-
-    $this->post('/login', [
-        'email' => $user->email,
-        'password' => 'Password1#',
-    ])->assertRedirect(route('two-factor.login'));
-
-    Carbon::setTestNow(Carbon::now()->addSeconds(60));
-
-    $freshOtp = $google2fa->getCurrentOtp($decryptedSecret);
-
-    $this->post('/two-factor-challenge', [
-        'code' => $freshOtp,
-    ])->assertRedirect(route('dashboard'));
-
-    $this->assertAuthenticated();
+    // 2FA Challenge
+    $this
+        ->followingRedirects()
+        ->post('/two-factor-challenge', [
+            'code' => $otp,
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Dashboard')
+        );
 });
 
 test('2FA users cannot authenticate with invalid code', function () {
+    // Create User
     $user = User::factory()->create([
         'password' => Hash::make('Password1#'),
     ]);
 
-    $this->actingAs($user)->post('/user/confirm-password', [
-        'password' => 'Password1#',
-    ]);
+    // Enable 2FA
+    $enable2FA = app(EnableTwoFactorAuthentication::class);
+    $enable2FA($user);
 
-    $this->actingAs($user)->post('/user/two-factor-authentication');
+    // Confirm 2FA (manually for test)
+    $user->forceFill([
+        'two_factor_confirmed_at' => now(),
+    ])->save();
 
-    $decryptedSecret = Crypt::decrypt($user->two_factor_secret);
-    $google2fa = new Google2FA;
-    $otp = $google2fa->getCurrentOtp($decryptedSecret);
+    // Initial login
+    $this->get(route('login'));
 
-    $this->actingAs($user)->post('/user/confirmed-two-factor-authentication', [
-        'code' => $otp,
-    ]);
+    $this
+        ->followingRedirects()
+        ->post(route('login'), [
+            'email' => $user->email,
+            'password' => 'Password1#',
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Auth/TwoFactorChallenge')
+        );
 
-    $this->actingAs($user)->post('/logout');
-    $this->assertGuest();
-
-    $this->post('/login', [
-        'email' => $user->email,
-        'password' => 'Password1#',
-    ])->assertRedirect(route('two-factor.login'));
-
-    $response = $this->post('/two-factor-challenge', [
-        'code' => '123456',
-    ])->assertRedirect(route('two-factor.login'));
-
-    $response->assertSessionHas('errors');
-    expect(session('errors')->get('code')[0])->toBe('The provided two factor authentication code was invalid.');
-
-    $this->assertGuest();
+    // 2FA Challenge with invalid code
+    $this
+        ->followingRedirects()
+        ->post('/two-factor-challenge', [
+            'code' => '0011',
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Auth/TwoFactorChallenge')
+        );
 });

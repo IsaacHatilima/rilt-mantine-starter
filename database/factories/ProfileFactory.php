@@ -16,7 +16,7 @@ class ProfileFactory extends Factory
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'gender' => $this->faker->randomElement(['male', 'female', 'non-binary', 'other']),
-            'date_of_birth' => Carbon::now(),
+            'date_of_birth' => $this->faker->dateTimeBetween('-21 years', '-19 years')->format('Y-m-d'),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

@@ -23,7 +23,7 @@ class ProfileUpdateRequest extends FormRequest
             ExistingEmailRule::rules($this->user()->id),
             [
                 'date_of_birth' => ['nullable', 'date'],
-                'gender' => ['nullable', Rule::in(['male', 'female', 'other']), 'string'],
+                'gender' => ['nullable', Rule::in(['male', 'female', 'other', 'non-binary']), 'string'],
             ]
         );
     }

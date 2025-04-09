@@ -1,4 +1,3 @@
-import { useNotification } from '@/Context/NotificationContext';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { Alert, Button, PinInput } from '@mantine/core';
@@ -7,7 +6,6 @@ import { FormEventHandler, useState } from 'react';
 
 function TwoFactorChallenge() {
     const [loading, { open, close }] = useDisclosure();
-    const { triggerNotification } = useNotification();
     const [twoFactorError, setTwoFactorError] = useState('');
     const { data, setData, post } = useForm({
         code: '',
@@ -21,11 +19,6 @@ function TwoFactorChallenge() {
             },
             onError: (error) => {
                 setTwoFactorError(error.code);
-                triggerNotification(
-                    'Warning',
-                    'Unable to confirm 2FA.',
-                    'yellow',
-                );
             },
         });
     };

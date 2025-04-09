@@ -1,6 +1,6 @@
 <?php
 
-use App\Actions\Auth\RegisterAction;
+use App\Actions\Auth\GoogleRegisterAction;
 use App\Models\User;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -28,8 +28,8 @@ it('handles Google callback and creates a new user', function () {
             ->getMock()
         );
 
-    $registerActionMock = Mockery::mock(RegisterAction::class);
-    $registerActionMock->shouldReceive('googleRegister')
+    $registerActionMock = Mockery::mock(GoogleRegisterAction::class);
+    $registerActionMock->shouldReceive('execute')
         ->once()
         ->with(Mockery::on(function ($data) {
             return $data->email === 'user@example.com' &&
@@ -41,7 +41,7 @@ it('handles Google callback and creates a new user', function () {
             'email' => 'user@example.com',
         ]));
 
-    $this->app->instance(RegisterAction::class, $registerActionMock);
+    $this->app->instance(GoogleRegisterAction::class, $registerActionMock);
 
     $response = $this->get('/google/callback');
 

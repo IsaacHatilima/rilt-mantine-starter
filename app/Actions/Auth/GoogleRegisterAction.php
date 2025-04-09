@@ -2,17 +2,15 @@
 
 namespace App\Actions\Auth;
 
-use App\Notifications\VerifyEmailNotification;
 use App\Repository\ProfileRepository;
 use App\Repository\UserRepository;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Throwable;
 
-class RegisterAction
+class GoogleRegisterAction
 {
     /**
-     * Creating user accounts by filling out the register form
+     * Creating user accounts using Google with the Laravel Socialite
      */
     private ProfileRepository $profileRepository;
 
@@ -32,7 +30,7 @@ class RegisterAction
         return DB::transaction(function () use ($request) {
             $user = $this->userRepository->create([
                 'email' => strtolower($request->email),
-                'password' => Hash::make($request->password),
+                'email_verified_at' => now(),
             ]);
 
             $this->profileRepository->create([
@@ -40,8 +38,6 @@ class RegisterAction
                 'first_name' => ucwords($request->first_name),
                 'last_name' => ucwords($request->last_name),
             ]);
-
-            $user->notify(new VerifyEmailNotification($user));
 
             return $user;
         });

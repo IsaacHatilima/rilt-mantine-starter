@@ -14,17 +14,14 @@ import GuestLayout from '../../Layouts/GuestLayout';
 
 interface SocialAuthProps {
     google: boolean;
+    github: boolean;
+    facebook: boolean;
 }
 
-export default function Login({
-    status,
-    googleError,
-}: {
-    status?: string;
-    googleError?: string;
-}) {
+export default function Login({ status }: { status?: string }) {
     const socialAuth = usePage().props.socialAuth as SocialAuthProps;
     const [loading, { open, close }] = useDisclosure();
+    const LoginError = usePage().props.errors;
     const { data, setData, post, errors, reset } = useForm<{
         email: string;
         password: string;
@@ -38,7 +35,7 @@ export default function Login({
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         open();
-        post('/login', {
+        post(route('login.store'), {
             onFinish: () => {
                 reset('password');
             },
@@ -58,9 +55,9 @@ export default function Login({
                 </Alert>
             )}
 
-            {googleError && (
+            {LoginError.error && (
                 <Alert variant="light" color="yellow" title="Warning">
-                    {status}
+                    {LoginError.error}
                 </Alert>
             )}
 

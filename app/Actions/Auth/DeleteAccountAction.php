@@ -9,7 +9,7 @@ class DeleteAccountAction
     /**
      * Create a new class instance.
      */
-    public function delete_account($request): void
+    public function delete($request): void
     {
         $user = $request->user();
 
