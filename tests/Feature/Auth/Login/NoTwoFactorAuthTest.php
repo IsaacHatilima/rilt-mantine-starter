@@ -1,45 +1,72 @@
 <?php
 
 use App\Models\User;
+use Inertia\Testing\AssertableInertia as Assert;
 
-test('login screen can be rendered', function () {
-    $response = $this->get('/login');
+/*
+ * Default user password in User factory is: Password1#
+ * */
 
-    $response->assertStatus(200);
+test('login screen renders correct Inertia page', function () {
+    $this->get(route('login'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Auth/Login')
+            ->where('errors', [])
+        );
 });
 
-test('No  2FA users can authenticate', function () {
+test('user can login', function () {
     $user = User::factory()->create([
         'password' => Hash::make('Password1#'),
     ]);
 
-    $response = $this->post('/login', [
-        'email' => $user->email,
-        'password' => 'Password1#',
-    ]);
+    $this->get(route('login'));
 
-    $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
+    $this
+        ->followingRedirects()
+        ->post(route('login'), [
+            'email' => $user->email,
+            'password' => 'Password1#',
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Dashboard')
+            ->where('auth.user', auth()->user())
+        );
 });
 
-test('No  2FA users can not authenticate with invalid email', function () {
-    $user = User::factory()->create();
+test('users can not authenticate with invalid email', function () {
+    User::factory()->create();
 
-    $this->post('/login', [
-        'email' => 'invalid@email.com',
-        'password' => 'wrong-password',
-    ]);
+    $this->get(route('login'));
 
-    $this->assertGuest();
+    $this
+        ->followingRedirects()
+        ->post(route('login'), [
+            'email' => 'invalid@email.com',
+            'password' => 'Password1#',
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Auth/Login')
+            ->where('errors.email', 'These credentials do not match our records.')
+        );
 });
 
-test('No  2FA users can not authenticate with invalid password', function () {
+test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
-    $this->post('/login', [
-        'email' => $user->email,
-        'password' => 'wrong-password',
-    ]);
+    $this->get(route('login'));
 
-    $this->assertGuest();
+    $this
+        ->followingRedirects()
+        ->post(route('login'), [
+            'email' => $user->email,
+            'password' => 'InvalidPassword#',
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Auth/Login')
+            ->where('errors.email', 'These credentials do not match our records.')
+        );
 });

@@ -33,6 +33,6 @@ class PasswordResetLinkController extends Controller
     {
         $this->forgotPasswordAction->execute($request);
 
-        return back()->with('status', __('Password reset link sent. Please check your email.'));
+        return redirect()->route('password.request')->with('status', __('Password reset link sent. Please check your email.'));
     }
 }

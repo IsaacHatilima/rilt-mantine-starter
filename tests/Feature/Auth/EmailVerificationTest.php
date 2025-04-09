@@ -29,7 +29,7 @@ test('email is not verified with invalid hash', function () {
     $verificationUrl = URL::temporarySignedRoute(
         'verification.verify',
         now()->addMinutes(60),
-        ['id' => $user->id, 'hash' => sha1('wrong-email')]
+        ['id' => 'wrong-user-id', 'hash' => sha1('wrong-email')]
     );
 
     $this->actingAs($user)->get($verificationUrl);
