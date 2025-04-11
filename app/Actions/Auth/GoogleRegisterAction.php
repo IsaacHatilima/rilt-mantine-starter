@@ -25,18 +25,18 @@ class GoogleRegisterAction
     /**
      * @throws Throwable
      */
-    public function execute($request)
+    public function execute(object $requestData)
     {
-        return DB::transaction(function () use ($request) {
+        return DB::transaction(function () use ($requestData) {
             $user = $this->userRepository->create([
-                'email' => strtolower($request->email),
+                'email' => strtolower($requestData->email),
                 'email_verified_at' => now(),
             ]);
 
             $this->profileRepository->create([
                 'user_id' => $user->id,
-                'first_name' => ucwords($request->first_name),
-                'last_name' => ucwords($request->last_name),
+                'first_name' => ucwords($requestData->first_name),
+                'last_name' => ucwords($requestData->last_name),
             ]);
 
             return $user;

@@ -2,7 +2,7 @@ import { useForm } from '@inertiajs/react';
 import { Button, Modal, PasswordInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import { FormEvent, FormEventHandler, useRef } from 'react';
+import { FormEventHandler, useRef } from 'react';
 
 export default function DeleteUserForm() {
     const [loading, { open, close }] = useDisclosure(false);
@@ -20,7 +20,7 @@ export default function DeleteUserForm() {
         current_password: '',
     });
 
-    const deleteUser: FormEventHandler = (e: FormEvent<Element>): void => {
+    const deleteUser: FormEventHandler = (e): void => {
         e.preventDefault();
         open();
         destroy(route('profile.destroy'), {

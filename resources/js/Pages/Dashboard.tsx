@@ -16,7 +16,10 @@ export default function Dashboard() {
             <div className="py-12">
                 <Card shadow="sm" padding="lg" radius="md" withBorder>
                     <Group justify="space-between" mt="md" mb="xs">
-                        <Text fw={500}>RILT Starter App</Text>
+                        <Text fw={500}>
+                            React, Inertia, Laravel, Tailwind and Mantine
+                            Starter App
+                        </Text>
                         <Badge color="pink">V 0.0.1</Badge>
                     </Group>
 
