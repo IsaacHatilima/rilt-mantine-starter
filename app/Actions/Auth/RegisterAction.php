@@ -2,9 +2,10 @@
 
 namespace App\Actions\Auth;
 
-use App\Notifications\VerifyEmailNotification;
+use App\Jobs\SendVerificationEmailJob;
 use App\Repository\ProfileRepository;
 use App\Repository\UserRepository;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Throwable;
@@ -27,7 +28,7 @@ class RegisterAction
     /**
      * @throws Throwable
      */
-    public function execute($request)
+    public function execute(Request $request)
     {
         return DB::transaction(function () use ($request) {
             $user = $this->userRepository->create([
@@ -41,7 +42,7 @@ class RegisterAction
                 'last_name' => ucwords($request->last_name),
             ]);
 
-            $user->notify(new VerifyEmailNotification($user));
+            SendVerificationEmailJob::dispatch($user);
 
             return $user;
         });

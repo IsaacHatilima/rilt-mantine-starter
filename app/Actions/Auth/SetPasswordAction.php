@@ -3,6 +3,7 @@
 namespace App\Actions\Auth;
 
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -18,14 +19,14 @@ class SetPasswordAction
         //
     }
 
-    public function checkToken($email): bool
+    public function checkToken(string $email): bool
     {
         return DB::table('password_reset_tokens')
             ->where('email', $email)
             ->exists();
     }
 
-    public function setPassword($request)
+    public function setPassword(Request $request)
     {
         return Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
@@ -40,7 +41,7 @@ class SetPasswordAction
         );
     }
 
-    public function changePassword($request): void
+    public function changePassword(Request $request): void
     {
         $request->user()->update([
             'password' => Hash::make($request->password),

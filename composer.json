@@ -1,5 +1,4 @@
 {
-    "$schema": "https://getcomposer.org/schema.json",
     "name": "isaachatilima/rilt-mantine-starter",
     "type": "project",
     "description": "A Laravel + Inertia + React + Mantine starter kit.",

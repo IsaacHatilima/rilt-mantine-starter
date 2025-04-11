@@ -24,7 +24,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/google/callback', [GoogleAuthController::class, 'handleGoogleCallback'])
         ->name('google.callback');
 
-    Route::get('login', [LoginController::class, 'create'])
+    Route::get('/', [LoginController::class, 'create'])
         ->name('login');
 
     Route::get('/two-factor-challenge', function () {

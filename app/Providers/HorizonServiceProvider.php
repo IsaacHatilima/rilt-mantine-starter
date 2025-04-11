@@ -16,7 +16,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
         parent::boot();
 
         // Horizon::routeSmsNotificationsTo('15556667777');
-        Horizon::routeMailNotificationsTo('notify@isaachatilima.com');
+        Horizon::routeMailNotificationsTo('notify@domain.com');
         // Horizon::routeSlackNotificationsTo('slack-webhook-url', '#channel');
     }
 
@@ -29,7 +29,8 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     {
         Gate::define('viewHorizon', function ($user) {
             return in_array($user->email, [
-                'dev@isaachatilima.com',
+                'user@mail.com',
+                'example@mail.com',
             ]);
         });
     }

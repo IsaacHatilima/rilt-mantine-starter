@@ -32,7 +32,7 @@ test('user can delete their account', function () {
         ])
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
-            ->component('Welcome')
+            ->component('Auth/Login')
         );
 
     $this->assertDatabaseMissing('users', ['id' => $user->id]);

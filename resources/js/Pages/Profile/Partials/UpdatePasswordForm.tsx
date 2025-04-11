@@ -55,7 +55,7 @@ export default function UpdatePasswordForm() {
 
                 <p className="mt-1 text-sm">
                     Ensure your account is using a long, random password to stay
-                    secure.xxxxxxx
+                    secure.
                 </p>
             </header>
 

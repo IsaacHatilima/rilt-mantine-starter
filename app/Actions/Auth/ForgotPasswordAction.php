@@ -3,6 +3,7 @@
 namespace App\Actions\Auth;
 
 use App\Jobs\SendPasswordResetLink;
+use Illuminate\Http\Request;
 
 class ForgotPasswordAction
 {
@@ -14,7 +15,7 @@ class ForgotPasswordAction
         //
     }
 
-    public function execute($request): void
+    public function execute(Request $request): void
     {
         SendPasswordResetLink::dispatch($request->email);
     }

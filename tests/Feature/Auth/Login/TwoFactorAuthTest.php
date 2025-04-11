@@ -25,7 +25,7 @@ test('2FA users can authenticate with valid code', function () {
 
     $this
         ->followingRedirects()
-        ->post(route('login'), [
+        ->post(route('login.store'), [
             'email' => $user->email,
             'password' => 'Password1#',
         ])
@@ -66,11 +66,11 @@ test('2FA users cannot authenticate with invalid code', function () {
     ])->save();
 
     // Initial login
-    $this->get(route('login'));
+    $this->get(route('login.store'));
 
     $this
         ->followingRedirects()
-        ->post(route('login'), [
+        ->post(route('login.store'), [
             'email' => $user->email,
             'password' => 'Password1#',
         ])

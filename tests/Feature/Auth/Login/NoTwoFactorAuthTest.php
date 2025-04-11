@@ -24,7 +24,7 @@ test('user can login', function () {
 
     $this
         ->followingRedirects()
-        ->post(route('login'), [
+        ->post(route('login.store'), [
             'email' => $user->email,
             'password' => 'Password1#',
         ])
@@ -42,7 +42,7 @@ test('users can not authenticate with invalid email', function () {
 
     $this
         ->followingRedirects()
-        ->post(route('login'), [
+        ->post(route('login.store'), [
             'email' => 'invalid@email.com',
             'password' => 'Password1#',
         ])
@@ -60,7 +60,7 @@ test('users can not authenticate with invalid password', function () {
 
     $this
         ->followingRedirects()
-        ->post(route('login'), [
+        ->post(route('login.store'), [
             'email' => $user->email,
             'password' => 'InvalidPassword#',
         ])
